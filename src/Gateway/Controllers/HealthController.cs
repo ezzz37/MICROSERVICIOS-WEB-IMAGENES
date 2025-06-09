@@ -1,6 +1,9 @@
-﻿namespace Gateway.Controllers
+﻿    using Microsoft.AspNetCore.Mvc;
+
+[ApiController]
+[Route("health")]
+public class HealthController : ControllerBase
 {
-    public class HealthController
-    {
-    }
+    [HttpGet]
+    public IActionResult Get() => Ok(new { status = "Gateway running", time = DateTime.UtcNow });
 }

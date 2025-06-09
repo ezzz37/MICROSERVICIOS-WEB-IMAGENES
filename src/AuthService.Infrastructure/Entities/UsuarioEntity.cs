@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AuthService.Infrastructure.Entities
+﻿namespace AuthService.Infrastructure.Entities
 {
-    internal class UsuarioEntity
+    public class UsuarioEntity
     {
+        public int IdUsuario { get; set; }
+        public string Username { get; set; } = null!;
+        public string PasswordHash { get; set; } = null!;
+        public DateTime FechaCreacion { get; set; }
     }
 }
