@@ -1,0 +1,29 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+
+# Entity Framework Core Migrations
+**/Migrations/
+
+# ASP.NET Core секретos
+*.Development.json
+appsettings.*.json
+
+# Node / React
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# VS Code
+.vscode/
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
