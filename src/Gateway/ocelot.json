@@ -1,0 +1,19 @@
+{
+    "Routes": [
+        {
+            "DownstreamPathTemplate": "/api/auth/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "authservice",
+                    "Port": 80
+                }
+            ],
+            "UpstreamPathTemplate": "/auth/{everything}"
+        }
+    ],
+    "GlobalConfiguration": {
+        "RequestIdKey": "OcRequestId",
+        "BaseUrl": "http://gateway"
+    }
+}

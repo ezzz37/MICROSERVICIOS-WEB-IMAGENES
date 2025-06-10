@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: ./src/Gateway
+      dockerfile: Dockerfile
+    image: gateway:latest
+    container_name: gateway
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      - authservice
+      - userservice
+      - imagenservice
+    networks:
+      - microservices-net
+
+  authservice:
+    build:
+      context: ./src/AuthService
+      dockerfile: Dockerfile
+    image: authservice:latest
+    container_name: authservice
+    ports:
+      - "5002:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      # ConnectionStrings__AuthDb: "Server=db_auth;Database=AuthDb;User Id=sa;Password=YourStrong!Passw0rd"
+    depends_on:
+      - db_auth
+    networks:
+      - microservices-net
+
+  userservice:
+    build:
+      context: ./src/UserService
+      dockerfile: Dockerfile
+    image: userservice:latest
+    container_name: userservice
+    ports:
+      - "5003:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      # ConnectionStrings__UserDb: "Server=db_user;Database=UserDb;User Id=sa;Password=YourStrong!Passw0rd"
+    depends_on:
+      - authservice
+      - db_user
+    networks:
+      - microservices-net
+
+  imagenservice:
+    build:
+      context: ./src/ImagenService
+      dockerfile: Dockerfile
+    image: imagenservice:latest
+    container_name: imagenservice
+    ports:
+      - "5004:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      - authservice
+    networks:
+      - microservices-net
+
+  reactfrontend:
+    build:
+      context: ./src/ReactFrontend
+      dockerfile: Dockerfile
+    image: reactfrontend:latest
+    container_name: reactfrontend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - gateway
+    networks:
+      - microservices-net
+
+  # Bases de datos SQL Server (opcional para migraciones)
+  db_auth:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: db_auth
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - auth-db-data:/var/opt/mssql
+    networks:
+      - microservices-net
+
+  db_user:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: db_user
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1434:1433"
+    volumes:
+      - user-db-data:/var/opt/mssql
+    networks:
+      - microservices-net
+
+volumes:
+  auth-db-data:
+  user-db-data:
+
+networks:
+  microservices-net:
+    driver: bridge
