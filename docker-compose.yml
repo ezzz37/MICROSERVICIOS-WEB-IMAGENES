@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  mi-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mi-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourStrong!Passw0rd"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mi-sql-data:/var/opt/mssql
+    networks:
+      - backend
+
+  init-db:
+    image: mcr.microsoft.com/mssql-tools:latest
+    container_name: init-db
+    depends_on:
+      - mi-sql
+    volumes:
+      - ./init-authservice.sql:/scripts/init-authservice.sql:ro
+    entrypoint:
+      - /opt/mssql-tools/bin/sqlcmd
+      - -S
+      - "mi-sql,1433"
+      - -U
+      - "sa"
+      - -P
+      - "YourStrong!Passw0rd"
+      - -i
+      - "/scripts/init-authservice.sql"
+    networks:
+      - backend
+
+  authservice:
+    build:
+      context: ./src/AuthService
+      dockerfile: Dockerfile
+    image: authservice:dev
+    container_name: authservice
+    depends_on:
+      - init-db
+    ports:
+      - "32780:8080"
+    environment:
+      ConnectionStrings__AuthDb: >
+        Server=mi-sql,1433;
+        Database=AuthServiceBD;
+        User Id=sa;
+        Password=YourStrong!Passw0rd;
+        TrustServerCertificate=True;
+        Encrypt=False
+    networks:
+      - backend
+
+  gateway:
+    build:
+      context: ./src/Gateway
+      dockerfile: Dockerfile
+    image: gateway:dev
+    container_name: gateway
+    depends_on:
+      - authservice
+    ports:
+      - "8081:8080"
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+    networks:
+      - backend
+
+volumes:
+  mi-sql-data:
+
+networks:
+  backend:
+    driver: bridge
