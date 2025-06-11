@@ -1,30 +1,37 @@
-# Consulte https://aka.ms/customizecontainer para aprender a personalizar su contenedor de depuración y cómo Visual Studio usa este Dockerfile para compilar sus imágenes para una depuración más rápida.
-
-# Esta fase se usa cuando se ejecuta desde VS en modo rápido (valor predeterminado para la configuración de depuración)
+# --------- 1) Base (runtime) ---------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
+# Exponer solo HTTP en el puerto 8080\ nEXPOSE 8080
 
-# Esta fase se usa para compilar el proyecto de servicio
+# Forzar a ASP.NET Core a escuchar únicamente en HTTP
+ENV ASPNETCORE_URLS=http://+:8080
+
+# --------- 2) Build (SDK) ------------
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["AuthService.csproj", "."]
-RUN dotnet restore "./AuthService.csproj"
+
+# Copiar el .csproj y restaurar dependencias
+COPY ["AuthService.csproj", "./"]
+RUN dotnet restore "AuthService.csproj"
+
+# Copiar el resto del código y compilar
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "./AuthService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "AuthService.csproj" -c Release -o /app/build
 
-# Esta fase se usa para publicar el proyecto de servicio que se copiará en la fase final.
+# --------- 3) Publish ----------------
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./AuthService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "AuthService.csproj" \
+    -c Release \
+    -o /app/publish \
+    /p:UseAppHost=false
 
-# Esta fase se usa en producción o cuando se ejecuta desde VS en modo normal (valor predeterminado cuando no se usa la configuración de depuración)
+# --------- 4) Final ------------------
 FROM base AS final
 WORKDIR /app
+
+# Copiar los artefactos ya publicados
 COPY --from=publish /app/publish .
+
+# Punto de entrada
 ENTRYPOINT ["dotnet", "AuthService.dll"]

@@ -1,33 +1,30 @@
-﻿using AuthService.Data;
-using AuthService.Helpers;
-using AuthService.Models;
-using Microsoft.Extensions.Options;
+﻿using System.Threading.Tasks;
+using AuthService.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Services
 {
     public class UserService : IUserService
     {
         private readonly AuthDbContext _db;
-        private readonly byte[] _key;
-        private readonly byte[] _iv;
 
-        public UserService(
-            AuthDbContext db,
-            IOptions<EncryptionOptions> encOpts)
+        public UserService(AuthDbContext db)
+            => _db = db;
+
+        public async Task<int?> ValidateCredentialsAsync(string username, string password)
         {
-            _db = db;
-            _key = Convert.FromBase64String(encOpts.Value.Key);
-            _iv = Convert.FromBase64String(encOpts.Value.IV);
-        }
+            // Ejecuta el SP y lee solo el primer resultado
+            var loginResults = await _db.LoginResults
+                .FromSqlInterpolated($@"
+                    EXEC dbo.sp_ValidarUsuario 
+                        @Username      = {username}, 
+                        @PasswordInput = {password}
+                ")
+                .AsNoTracking()
+                .ToListAsync();
 
-        public Usuario? ValidateCredentials(string username, string password)
-        {
-            var user = _db.Usuarios
-                          .SingleOrDefault(u => u.Username == username);
-            if (user == null) return null;
-
-            var plain = EncryptionHelper.Decrypt(user.PasswordEnc, _key, _iv);
-            return plain == password ? user : null;
+            var login = loginResults.FirstOrDefault();
+            return login?.IdUsuario;
         }
     }
 }

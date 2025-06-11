@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using System.Text;
 using AuthService.Helpers;
-using AuthService.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,12 +18,12 @@ namespace AuthService.Services
             _key = Encoding.UTF8.GetBytes(_opts.Key);
         }
 
-        public string GenerateToken(Usuario user)
+        public string GenerateToken(int userId, string username)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub,         user.IdUsuario.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.Username)
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, username)
             };
 
             var creds = new SigningCredentials(

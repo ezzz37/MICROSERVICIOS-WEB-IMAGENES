@@ -1,118 +1,78 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  gateway:
-    build:
-      context: ./src/Gateway
-      dockerfile: Dockerfile
-    image: gateway:latest
-    container_name: gateway
-    ports:
-      - "8080:8080"
-      - "8081:8081"
+  mi-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mi-sql
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    depends_on:
-      - authservice
-      - userservice
-      - imagenservice
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourStrong!Passw0rd"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mi-sql-data:/var/opt/mssql
     networks:
-      - microservices-net
+      - backend
+
+  init-db:
+    image: mcr.microsoft.com/mssql-tools:latest
+    container_name: init-db
+    depends_on:
+      - mi-sql
+    volumes:
+      - ./init-authservice.sql:/scripts/init-authservice.sql:ro
+    entrypoint:
+      - /opt/mssql-tools/bin/sqlcmd
+      - -S
+      - "mi-sql,1433"
+      - -U
+      - "sa"
+      - -P
+      - "YourStrong!Passw0rd"
+      - -i
+      - "/scripts/init-authservice.sql"
+    networks:
+      - backend
 
   authservice:
     build:
       context: ./src/AuthService
       dockerfile: Dockerfile
-    image: authservice:latest
+    image: authservice:dev
     container_name: authservice
-    ports:
-      - "5002:80"
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      # ConnectionStrings__AuthDb: "Server=db_auth;Database=AuthDb;User Id=sa;Password=YourStrong!Passw0rd"
     depends_on:
-      - db_auth
-    networks:
-      - microservices-net
-
-  userservice:
-    build:
-      context: ./src/UserService
-      dockerfile: Dockerfile
-    image: userservice:latest
-    container_name: userservice
+      - init-db
     ports:
-      - "5003:80"
+      - "32780:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      # ConnectionStrings__UserDb: "Server=db_user;Database=UserDb;User Id=sa;Password=YourStrong!Passw0rd"
+      ConnectionStrings__AuthDb: >
+        Server=mi-sql,1433;
+        Database=AuthServiceBD;
+        User Id=sa;
+        Password=YourStrong!Passw0rd;
+        TrustServerCertificate=True;
+        Encrypt=False
+    networks:
+      - backend
+
+  gateway:
+    build:
+      context: ./src/Gateway
+      dockerfile: Dockerfile
+    image: gateway:dev
+    container_name: gateway
     depends_on:
       - authservice
-      - db_user
-    networks:
-      - microservices-net
-
-  imagenservice:
-    build:
-      context: ./src/ImagenService
-      dockerfile: Dockerfile
-    image: imagenservice:latest
-    container_name: imagenservice
     ports:
-      - "5004:80"
+      - "8081:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    depends_on:
-      - authservice
+      ASPNETCORE_URLS: "http://+:8080"
     networks:
-      - microservices-net
-
-  reactfrontend:
-    build:
-      context: ./src/ReactFrontend
-      dockerfile: Dockerfile
-    image: reactfrontend:latest
-    container_name: reactfrontend
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: development
-    depends_on:
-      - gateway
-    networks:
-      - microservices-net
-
-  # Bases de datos SQL Server (opcional para migraciones)
-  db_auth:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: db_auth
-    environment:
-      SA_PASSWORD: "YourStrong!Passw0rd"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1433:1433"
-    volumes:
-      - auth-db-data:/var/opt/mssql
-    networks:
-      - microservices-net
-
-  db_user:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: db_user
-    environment:
-      SA_PASSWORD: "YourStrong!Passw0rd"
-      ACCEPT_EULA: "Y"
-    ports:
-      - "1434:1433"
-    volumes:
-      - user-db-data:/var/opt/mssql
-    networks:
-      - microservices-net
+      - backend
 
 volumes:
-  auth-db-data:
-  user-db-data:
+  mi-sql-data:
 
 networks:
-  microservices-net:
+  backend:
     driver: bridge

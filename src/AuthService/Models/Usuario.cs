@@ -9,11 +9,11 @@ namespace AuthService.Models
         [Key]
         public int IdUsuario { get; set; }
 
-        [Required]
+        [Required, MaxLength(50)]
         public string Username { get; set; } = null!;
 
-        // clave cifrada con AES-256 y en Base64
+        // Mapea tu VARBINARY(MAX) PasswordEnc
         [Required]
-        public string PasswordEnc { get; set; } = null!;
+        public byte[] PasswordEnc { get; set; } = null!;
     }
 }
