@@ -24,7 +24,7 @@ namespace AuthService.Data
             // Configuramos LoginResult como entidad sin clave y sin tabla propia
             mb.Entity<LoginResult>()
               .HasNoKey()
-              .ToView(null);     // <-- evita mapear a una vista real
+              .ToView(null);
 
             base.OnModelCreating(mb);
         }

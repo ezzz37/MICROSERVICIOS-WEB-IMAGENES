@@ -1,20 +1,47 @@
 {
     "Routes": [
-      {
-        "DownstreamPathTemplate": "/auth/{everything}",
-        "DownstreamScheme":       "http",
-        "DownstreamHostAndPorts": [
-          {
-            "Host": "authservice",
-            "Port": 8080
-          }
-        ],
-        "UpstreamPathTemplate":   "/auth/{everything}",
-        "UpstreamHttpMethod":     [ "Post" ]
-      }
+        {
+            "DownstreamPathTemplate": "/health",
+            "UpstreamPathTemplate": "/health",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "gateway",
+                    "Port": 8080
+                }
+            ],
+            "UpstreamHttpMethod": [ "Get" ]
+        },
+        {
+            "DownstreamPathTemplate": "/auth/login",
+            "UpstreamPathTemplate": "/auth/login",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "authservice",
+                    "Port": 8080
+                }
+            ],
+            "UpstreamHttpMethod": [ "Post" ]
+        },
+        {
+            "DownstreamPathTemplate": "/protected/{everything}",
+            "UpstreamPathTemplate": "/protected/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "authservice",
+                    "Port": 8080
+                }
+            ],
+            "UpstreamHttpMethod": [ "Get" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        }
     ],
     "GlobalConfiguration": {
-      "RequestIdKey": "OcRequestId",
-      "BaseUrl":      "http://gateway"
+        "BaseUrl": "http://localhost:8081"
     }
-  }
+}
