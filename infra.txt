@@ -1,0 +1,215 @@
+Resumen de la separación
+
+    ImagenService
+
+        Base de datos ImagenesDB
+
+        Tablas
+
+            AlgoritmosCompresion
+
+            Imagenes
+
+            ImagenesProcesadas
+
+            Comparaciones
+
+    AuthService
+
+        Base de datos UsuariosDB
+
+        Tablas
+
+            Usuarios
+
+        Objetos criptográficos
+
+            Master Key
+
+            Certificate CertUsuarios
+
+            Symmetric Key KeyUsuarios
+
+        Stored Procedure
+
+            dbo.sp_ValidarUsuario
+
+
+
+
+
+┌───────────────────────────────────────────────────────┐
+│                      Frontend React                   │
+│ ┌───────────┐   ┌───────────────┐    ┌────────────┐   │
+│ │ LoginUI   │   │ DashboardUI   │    │ ImageUI    │   │
+│ └───────────┘   └───────────────┘    └────────────┘   │
+└────────────▲─────────────────▲────────────────▲──────┘
+             │ (1) BearerToken  │ (2) StatsAPI   │ (3) UploadDownload
+             │                  │                 │
+┌────────────┴──────────────────┴─────────────────┴──────┐
+│                    API Gateway                        │
+│  (Valida JWT, enruta apiauth → AuthService,         │
+│   apiimagen → ImagenService, apiusuarios → UserService) │
+└────────────┬──────────────────┬─────────────────────────┘
+             │                  │
+     ┌───────┴───────┐  ┌───────┴────────┐
+     │ AuthService   │  │ ImagenService  │
+     │ (UsuariosDB)  │  │ (ImagenesDB)   │
+     └───────────────┘  └────────────────┘
+
+
+MicroservicesSolution
+│
+├── docker-compose.yml
+├── k8s
+│   ├── gateway-deployment.yaml
+│   ├── authservice-deployment.yaml
+│   ├── userservice-deployment.yaml
+│   ├── imagenservice-deployment.yaml
+│   ├── reactfrontend-deployment.yaml
+│   └── namespaces.yaml
+│
+├── README.md
+│
+└── src
+    ├── Gateway
+    │   ├── Gateway.csproj
+    │   ├── Dockerfile
+    │   ├── ocelot.json
+    │   ├── appsettings.json
+    │   ├── Program.cs
+    │   ├── Startup.cs         (o equivalente en .NET 6+)
+    │   ├── Controllers
+    │   │   └── HealthController.cs
+    │   └── Properties
+    │       └── launchSettings.json
+    │
+    ├── AuthService
+    │    │
+    │    ├── AuthService.csproj
+    │    ├── Dockerfile
+    │    ├── appsettings.json
+    │    ├── Program.cs
+    │    │
+    │    ├── Models
+    │    │    └── User.cs
+    │    │
+    │    ├── Data
+    │    │   └── AuthDbContext.cs
+    │    │
+    │    ├── Helpers
+    │    │   └── EncryptionHelper.cs      ← AES-256 encryptdecrypt
+    │    │
+    │    ├── Services
+    │    │   ├── IUserService.cs          ← Validación de credenciales
+    │    │   ├── UserService.cs
+    │    │   ├── ITokenService.cs         ← Generación de JWT
+    │    │   └── TokenService.cs
+    │    │
+    │    ├── Controllers
+    │    │   └── AuthController.cs        ← Sólo POST login
+    │    │
+    │    └── Properties
+    │        └── launchSettings.json
+    │
+    ├── UserService
+    │   ├── UserService.csproj
+    │   ├── Dockerfile
+    │   ├── appsettings.json
+    │   ├── Program.cs
+    │   ├── Startup.cs
+    │   ├── Models
+    │   │   ├── UserProfile.cs
+    │   │   └── RoleAssignment.cs
+    │   ├── Data
+    │   │   ├── UserDbContext.cs
+    │   │   └── Migrations
+    │   │       ├── 2025xxxx_InitialCreate.cs
+    │   │       └── UserDbContextModelSnapshot.cs
+    │   ├── Controllers
+    │   │   ├── UsersController.cs
+    │   │   └── ProfilesController.cs
+    │   ├── Services
+    │   │   ├── IUserRepository.cs
+    │   │   └── UserRepository.cs
+    │   ├── DTOs
+    │   │   ├── UserDto.cs
+    │   │   └── ProfileDto.cs
+    │   └── Properties
+    │       └── launchSettings.json
+    │
+    ├── ImagenService
+    │   ├── ImagenService.csproj
+    │   ├── Dockerfile
+    │   ├── appsettings.json
+    │   ├── Program.cs
+    │   ├── Startup.cs
+    │   ├── Models
+    │   │   └── ImagenEntity.cs
+    │   ├── Data
+    │   │   ├── ImagenDbContext.cs
+    │   │   └── Migrations
+    │   │       ├── 2025xxxx_InitialCreate.cs
+    │   │       └── ImagenDbContextModelSnapshot.cs
+    │   ├── Controllers
+    │   │   ├── ImagenController.cs
+    │   │   └── StatusController.cs
+    │   ├── Services
+    │   │   ├── IImagenProcessor.cs
+    │   │   └── ImagenProcessor.cs
+    │   ├── Worker
+    │   │   └── ImagenWorker.cs   (si usas procesamiento en background con HostedService)
+    │   ├── DTOs
+    │   │   ├── UploadResponseDto.cs
+    │   │   └── StatusDto.cs
+    │   └── Properties
+    │       └── launchSettings.json
+    │
+    └── ReactFrontend
+        ├── Dockerfile
+        ├── package.json
+        ├── package-lock.json
+        ├── public
+        │   ├── index.html
+        │   ├── favicon.ico
+        │   └── manifest.json
+        ├── src
+        │   ├── index.js
+        │   ├── App.js
+        │   ├── App.css
+        │   ├── components
+        │   │   ├── LoginForm.jsx
+        │   │   ├── ImageUpload.jsx
+        │   │   ├── UserProfile.jsx
+        │   │   └── ... 
+        │   ├── pages
+        │   │   ├── HomePage.jsx
+        │   │   ├── LoginPage.jsx
+        │   │   ├── Dashboard.jsx
+        │   │   └── ... 
+        │   ├── services
+        │   │   ├── authService.js
+        │   │   ├── userService.js
+        │   │   └── imagenService.js
+        │   ├── utils
+        │   │   ├── apiClient.js    (configura axios o fetch base)
+        │   │   └── authHelpers.js
+        │   └── a
+        │       ├── logo.png
+        │       └── styles
+        │           └── globals.css
+        └── tsconfig.json (si usas TypeScript) o puede no existir si es JS puro
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+Resumen
+
+    Monta todo en docker-compose y valida flujos completos.
+
+    Desarrolla e integra Auth → Users → Imagen → Gateway → Frontend en ese orden.
+
+    Asegura calidad con tests y health-checks.
+
+    Transiciona a Kubernetes y CICD cuando tengas la aplicación estable.

@@ -1,43 +1,47 @@
 {
     "Routes": [
         {
-            "DownstreamPathTemplate": "/api/auth/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamPathTemplate": "/health",
+            "UpstreamPathTemplate": "/health",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
-                    "Port": 5001
+                    "Host": "gateway",
+                    "Port": 8080
                 }
             ],
-            "UpstreamPathTemplate": "/auth/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+            "UpstreamHttpMethod": [ "Get" ]
         },
         {
-            "DownstreamPathTemplate": "/api/users/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamPathTemplate": "/auth/login",
+            "UpstreamPathTemplate": "/auth/login",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
-                    "Port": 5002
+                    "Host": "authservice",
+                    "Port": 8080
                 }
             ],
-            "UpstreamPathTemplate": "/users/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+            "UpstreamHttpMethod": [ "Post" ]
         },
         {
-            "DownstreamPathTemplate": "/api/imagen/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamPathTemplate": "/protected/{everything}",
+            "UpstreamPathTemplate": "/protected/{everything}",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
-                    "Port": 5003
+                    "Host": "authservice",
+                    "Port": 8080
                 }
             ],
-            "UpstreamPathTemplate": "/imagen/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+            "UpstreamHttpMethod": [ "Get" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
         }
     ],
     "GlobalConfiguration": {
-        "BaseUrl": "http://localhost:5026"
+        "BaseUrl": "http://localhost:8081"
     }
 }

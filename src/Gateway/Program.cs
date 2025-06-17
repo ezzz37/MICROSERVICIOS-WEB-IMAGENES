@@ -1,76 +1,77 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
+锘縰sing System;
+using System.IO;
+using System.Text;
+using Gateway.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
-public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+// 1) Configuraci贸n de fuentes (appsettings, ocelot y envvars)
+builder.Host.ConfigureAppConfiguration((ctx, cfg) =>
 {
-    public static async Task Main(string[] args)
+    cfg.SetBasePath(Directory.GetCurrentDirectory());
+    cfg.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    cfg.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+    cfg.AddEnvironmentVariables();
+});
+
+// 2) Bind JwtOptions
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
+var jwtOpts = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>()
+             ?? throw new InvalidOperationException("JwtOptions no configurado.");
+var keyBytes = Encoding.UTF8.GetBytes(jwtOpts.Key);
+
+// 3) Configuraci贸n de autenticaci贸n JWT
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
     {
-        var builder = WebApplication.CreateBuilder(args);
-
-        // Carga de JSONs
-        builder.Configuration
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-               .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-
-        // 1) Registrar MVC y Ocelot
-        builder.Services.AddControllers();
-        builder.Services.AddOcelot(builder.Configuration);
-
-        // 2) Registrar Swagger
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        // 3) CORS y Auth (como antes)
-        builder.Services.AddCors(o =>
-            o.AddPolicy("CorsPolicy", p =>
-                p.AllowAnyOrigin()
-                 .AllowAnyHeader()
-                 .AllowAnyMethod()));
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(opts =>
-               {
-                   var jwt = builder.Configuration.GetSection("JwtSettings");
-                   opts.Authority = jwt["Authority"];
-                   opts.Audience = jwt["Audience"];
-                   opts.RequireHttpsMetadata = false;
-               });
-
-        var app = builder.Build();
-
-        if (app.Environment.IsDevelopment())
+        opt.RequireHttpsMetadata = false;
+        opt.SaveToken = true;
+        opt.TokenValidationParameters = new TokenValidationParameters
         {
-            app.UseDeveloperExceptionPage();
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+            ValidateIssuer = true,
+            ValidIssuer = jwtOpts.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtOpts.Audience,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
-            // 4) Habilitar Swagger UI en Development
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Gateway API V1");
-                c.RoutePrefix = "swagger";  // /swagger
-            });
-        }
+// 4) Autorizaci贸n, controllers y Swagger
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-        app.UseCors("CorsPolicy");
+// 5) Registro de Ocelot
+builder.Services.AddOcelot(builder.Configuration);
 
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
+var app = builder.Build();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
-
-        // 5) Ocelot al final
-        await app.UseOcelot();
-
-        // 6) Mant閚 vivo el host
-        app.Run();
-    }
+// 6) Pipeline de middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Tus controladores propios (p.ej. HealthController)
+app.MapControllers();
+
+// Configura Ocelot como proxy (esta llamada devuelve un Task que bloquea)
+await app.UseOcelot();
+
+// Finalmente, arranca Kestrel y mant茅n el proceso vivo
+app.Run();

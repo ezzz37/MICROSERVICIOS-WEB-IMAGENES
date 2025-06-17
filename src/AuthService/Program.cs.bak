@@ -1,0 +1,68 @@
+using System;
+using System.Text;
+using AuthService.Data;
+using AuthService.Services;
+using AuthService.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// --- 1) Exponer solo HTTP en el puerto 8080 ---
+// UseUrls anula cualquier configuración HTTPS implícita
+builder.WebHost.UseUrls("http://*:8080");
+
+// --- 2) Configurar DbContext ---
+builder.Services.AddDbContext<AuthDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthDb")));
+
+// --- 3) Configuraciones de opciones ---
+builder.Services.Configure<EncryptionOptions>(
+    builder.Configuration.GetSection("Encryption"));
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection("JwtOptions"));
+
+// --- 4) Inyección de servicios ---
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+// --- 5) Autenticación JWT ---
+var jwtOpts = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
+var key = Encoding.UTF8.GetBytes(jwtOpts.Key);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opts =>
+    {
+        opts.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidIssuer = jwtOpts.Issuer,
+            ValidAudience = jwtOpts.Audience,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+// --- 6) Controladores y Swagger ---
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// --- 7) Middleware pipeline ---
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+// --- 8) Mapear controladores ---
+app.MapControllers();
+
+app.Run();
