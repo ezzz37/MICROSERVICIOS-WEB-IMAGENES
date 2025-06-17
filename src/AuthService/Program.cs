@@ -11,22 +11,28 @@ var builder = WebApplication.CreateBuilder(args);
 // 1) Solo HTTP en el puerto 8080
 builder.WebHost.UseUrls("http://*:8080");
 
-// 2) DbContext apuntando a la cadena AuthDb
+// 2) DbContext con cadena AuthDb
 builder.Services.AddDbContext<AuthDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("AuthDb")));
 
-// 3) Configura opciones desde appsettings.json
+// 3) Carga de opciones desde appsettings.json
 builder.Services.Configure<EncryptionOptions>(
     builder.Configuration.GetSection("Encryption"));
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("JwtOptions"));
 
-// 4) Inyección de servicios de usuario y token
+// 4) Servicios de aplicación
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 // 5) Configura autenticación JWT
-var jwtOpts = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>()!;
+var jwtOpts = builder.Configuration
+    .GetSection("JwtOptions")
+    .Get<JwtOptions>();
+
+if (jwtOpts is null)
+    throw new InvalidOperationException("JwtOptions no configurado correctamente.");
+
 var keyBytes = Encoding.UTF8.GetBytes(jwtOpts.Key);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -43,21 +49,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// 6) Añade controladores y Swagger
+// 6) MVC y Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// (Opcional) Aplicar migraciones si las tienes
+// 7) Aplicar migraciones al iniciar
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     db.Database.Migrate();
 }
 
-// 7) Pipeline de middleware
+// 8) Middleware HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -65,10 +71,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 8) Mapear controladores
 app.MapControllers();
 
 app.Run();
