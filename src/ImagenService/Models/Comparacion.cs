@@ -1,4 +1,4 @@
-﻿namespace Backend.Models
+﻿namespace ImagenService.Models
 {
     public class Comparaciones
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend.DTOs
+namespace ImagenService.DTOs
 {
     public class ProcesarDto
     {

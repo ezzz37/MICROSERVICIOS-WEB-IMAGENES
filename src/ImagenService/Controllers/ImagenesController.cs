@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ImagenService.Data;
-using Backend.DTOs;
-using Backend.Models;
+using ImagenService.DTOs;
+using ImagenService.Models;
 using static System.Net.Mime.MediaTypeNames;
 using Image = System.Drawing.Image;
 
-namespace Backend.Controllers
+namespace ImagenService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
