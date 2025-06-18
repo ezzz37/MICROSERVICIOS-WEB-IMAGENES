@@ -1,4 +1,4 @@
-﻿namespace Backend.DTOs
+﻿namespace ImagenService.DTOs
 {
     public class CompararDto
     {

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ImagenService.Data;
-using Backend.DTOs;
-using Backend.Models;
-using Backend.Services;
+using ImagenService.DTOs;
+using ImagenService.Models;
+using ImagenService.Services;
 
 namespace ImagenService.Controllers
 {

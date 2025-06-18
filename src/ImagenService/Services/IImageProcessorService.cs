@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Backend.Services
+namespace ImagenService.Services
 {
     public interface IImageProcessorService
     {
