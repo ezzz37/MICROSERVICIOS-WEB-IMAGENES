@@ -1,9 +1,7 @@
 USE master;
 GO
 
---------------------------------------------------------------------------------
 -- 1) Si existe, poner SINGLE_USER y eliminar la BD
---------------------------------------------------------------------------------
 IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DigitalizacionImagenesBD')
 BEGIN
     ALTER DATABASE [DigitalizacionImagenesBD] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
@@ -11,30 +9,24 @@ BEGIN
 END
 GO
 
---------------------------------------------------------------------------------
 -- 2) Crear la base de datos
---------------------------------------------------------------------------------
 CREATE DATABASE [DigitalizacionImagenesBD];
 GO
 
---------------------------------------------------------------------------------
 -- 3) Conectar a la nueva BD
---------------------------------------------------------------------------------
 USE [DigitalizacionImagenesBD];
 GO
 
---------------------------------------------------------------------------------
 -- 4) Crear tabla AlgoritmosCompresion
---------------------------------------------------------------------------------
 CREATE TABLE dbo.AlgoritmosCompresion (
     IdAlgoritmoCompresion INT         IDENTITY(1,1) PRIMARY KEY,
     NombreAlgoritmo       NVARCHAR(50) NOT NULL UNIQUE
 );
 GO
 
---------------------------------------------------------------------------------
+
 -- 5) Semilla de algoritmos (inserta JPEG, PNG, RLE si no existen)
---------------------------------------------------------------------------------
+
 INSERT INTO dbo.AlgoritmosCompresion (NombreAlgoritmo)
 SELECT v.Nombre
 FROM (VALUES('JPEG'),('PNG'),('RLE')) AS v(Nombre)
@@ -43,9 +35,9 @@ LEFT JOIN dbo.AlgoritmosCompresion a
 WHERE a.NombreAlgoritmo IS NULL;
 GO
 
---------------------------------------------------------------------------------
+
 -- 6) Crear tabla Imagenes (imágenes originales)
---------------------------------------------------------------------------------
+
 CREATE TABLE dbo.Imagenes (
     IdImagen      INT            IDENTITY(1,1) PRIMARY KEY,
     Nombre        NVARCHAR(255)  NOT NULL,
@@ -56,9 +48,9 @@ CREATE TABLE dbo.Imagenes (
 );
 GO
 
---------------------------------------------------------------------------------
+
 -- 7) Crear tabla ImagenesProcesadas (imágenes procesadas)
---------------------------------------------------------------------------------
+
 CREATE TABLE dbo.ImagenesProcesadas (
     IdImagenProcesada     INT            IDENTITY(1,1) PRIMARY KEY,
     IdImagenOriginal      INT            NOT NULL,
@@ -81,17 +73,15 @@ CREATE TABLE dbo.ImagenesProcesadas (
 );
 GO
 
---------------------------------------------------------------------------------
 -- 7.1) Agregar restricción para ProfundidadBits
---------------------------------------------------------------------------------
 ALTER TABLE dbo.ImagenesProcesadas
   ADD CONSTRAINT CHK_ProfundidadBits
     CHECK (ProfundidadBits IN (1,8,24));
 GO
 
---------------------------------------------------------------------------------
+
 -- 8) Crear tabla Comparaciones (comparativas entre original y procesada)
---------------------------------------------------------------------------------
+
 CREATE TABLE dbo.Comparaciones (
     IdComparacion       INT            IDENTITY(1,1) PRIMARY KEY,
     IdImagenOriginal    INT            NOT NULL,
@@ -113,9 +103,9 @@ CREATE TABLE dbo.Comparaciones (
 );
 GO
 
---------------------------------------------------------------------------------
+
 -- 9) Índices para búsquedas rápidas
---------------------------------------------------------------------------------
+
 CREATE INDEX IX_ImgProc_IdImagenOriginal
     ON dbo.ImagenesProcesadas(IdImagenOriginal);
 GO

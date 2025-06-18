@@ -7,7 +7,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
 
-namespace Backend.Services
+namespace ImagenService.Services
 {
     public class ImageProcessorService : IImageProcessorService
     {
