@@ -1,14 +1,24 @@
 import apiClient from './apiClient';
 
-const login = async ({ email, password }) => {
-  const { data } = await apiClient.post('/auth/login', { email, password });
-  // data debería tener { token, user }
-  return data;
+/**
+ * Realiza login enviando username y password como parámetros separados.
+ * @param {string} username
+ * @param {string} password
+ */
+const login = async (username, password) => {
+  const { data } = await apiClient.post(
+    '/auth/login',
+    { username, password }
+  );
+  return data; // { accessToken }
 };
 
 const refreshToken = async () => {
   const { data } = await apiClient.post('/auth/refresh');
-  return data; // { token }
+  return data;
 };
 
-export default { login, refreshToken };
+export default {
+  login,
+  refreshToken
+};

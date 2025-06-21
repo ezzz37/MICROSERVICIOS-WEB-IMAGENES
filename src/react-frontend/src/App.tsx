@@ -1,35 +1,22 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/Login/LoginPage';
+
+import LoginPage     from './pages/Login/LoginPage';
 import DashboardPage from './pages/Dashboard/DashboardPage';
-import { useAuth } from './utils/authHelpers';
+import { useAuth }   from './utils/authHelpers';
 
 function App() {
   const { isAuthenticated } = useAuth();
 
   return (
     <Routes>
-      {/* Ruta raíz: si estás logueado vas al dashboard, si no al login */}
-      <Route
-        path="/"
-        element={
-          isAuthenticated
-            ? <Navigate to="/dashboard" replace />
-            : <Navigate to="/login" replace />
-        }
-      />
+      {/* 1) Siempre redirijo "/" a "/login" */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
-      {/* Login */}
-      <Route
-        path="/login"
-        element={
-          isAuthenticated
-            ? <Navigate to="/dashboard" replace />
-            : <LoginPage />
-        }
-      />
+      {/* 2) Login */}
+      <Route path="/login" element={<LoginPage />} />
 
-      {/* Dashboard */}
+      {/* 3) Dashboard protegido */}
       <Route
         path="/dashboard"
         element={
@@ -39,8 +26,8 @@ function App() {
         }
       />
 
-      {/* Cualquier otra ruta redirige a raíz */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* 4) Cualquier otra ruta → /login */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
