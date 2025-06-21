@@ -1,39 +1,50 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+// src/utils/authHelpers.js
+
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import authService from '../services/authService';
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+  login: async (username, password) => {},
+  refresh: async () => {},
+  isAuthenticated: false,
+});
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
 
-  // Al montar, chequea si ya hay token en localStorage
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-  }, []);
-
-  const login = async ({ email, password }) => {
-    // authService.login debe devolver { token, user }
-    const { token, user } = await authService.login({ email, password });
-    localStorage.setItem('token', token);
-    setUser(user);
+  // Llama a authService.login con (username, password)
+  const login = async (username, password) => {
+    // authService.login devuelve { accessToken }
+    const { accessToken } = await authService.login(username, password);
+    // Guarda el token y marca como autenticado
+    localStorage.setItem('token', accessToken);
     setIsAuthenticated(true);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setIsAuthenticated(false);
+  // Refresca el token cuando haga falta
+  const refresh = async () => {
+    const { accessToken } = await authService.refreshToken();
+    localStorage.setItem('token', accessToken);
   };
 
+  // Al montar, comprueba si hay token ya guardado
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+    <AuthContext.Provider value={{ login, refresh, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used inside an AuthProvider');
+  }
+  return ctx;
 }
