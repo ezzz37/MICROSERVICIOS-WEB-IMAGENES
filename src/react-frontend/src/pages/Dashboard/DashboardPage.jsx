@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../utils/authHelpers';
+import { useAuth } from '../../utils/authHelpers';
 import { Navigate } from 'react-router-dom';
 
-import imagenService from '../services/imagenService';
-import processedImageService from '../services/processedImageService';
-import comparacionesService from '../services/comparacionesService';
+import imagenService         from '../../services/imagenService';
+import processedImageService from '../../services/processedImageService';
+import comparacionesService  from '../../services/comparacionesService';
 
 const DashboardPage = () => {
   const { isAuthenticated, logout } = useAuth();
