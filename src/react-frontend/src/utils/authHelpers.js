@@ -6,6 +6,7 @@ import authService from '../services/authService';
 const AuthContext = createContext({
   login: async (username, password) => {},
   refresh: async () => {},
+  logout: () => {},
   isAuthenticated: false,
 });
 
@@ -14,28 +15,42 @@ export function AuthProvider({ children }) {
 
   // Llama a authService.login con (username, password)
   const login = async (username, password) => {
-    // authService.login devuelve { accessToken }
     const { accessToken } = await authService.login(username, password);
-    // Guarda el token y marca como autenticado
     localStorage.setItem('token', accessToken);
     setIsAuthenticated(true);
   };
 
-  // Refresca el token cuando haga falta
+  // Refresca el token cuando haga falta (revalida en backend)
   const refresh = async () => {
     const { accessToken } = await authService.refreshToken();
     localStorage.setItem('token', accessToken);
+    setIsAuthenticated(true);
   };
 
-  // Al montar, comprueba si hay token ya guardado
+  // Cierra sesión: borra token y marca como no autenticado
+  const logout = () => {
+    authService.logout();
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+  };
+
+  // Al montar, intento un refresh real en el backend.
+  // Si falla, fuerza al login; si pasa, deja el dashboard accesible.
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      setIsAuthenticated(true);
-    }
+    (async () => {
+      try {
+        const { accessToken } = await authService.refreshToken();
+        localStorage.setItem('token', accessToken);
+        setIsAuthenticated(true);
+      } catch {
+        localStorage.removeItem('token');
+        setIsAuthenticated(false);
+      }
+    })();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ login, refresh, isAuthenticated }}>
+    <AuthContext.Provider value={{ login, refresh, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

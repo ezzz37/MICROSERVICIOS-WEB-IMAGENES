@@ -1,0 +1,361 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+/* Reset y box-sizing */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ---------- CONTENEDOR PRINCIPAL ---------- */
+.App {
+  min-height: 100vh;
+  padding: 2rem 4rem;
+  background: linear-gradient(270deg, #ba6e3a, #e2923c, #f4b75e, #e06f1b, #c16516);
+  background-size: 1000% 1000%;
+  animation: gradientAnimation 20s ease infinite;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 100vw;
+}
+
+@keyframes gradientAnimation {
+  0%   { background-position:   0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position:   0% 50%; }
+}
+
+/* ---------- HEADER ---------- */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+}
+
+.app-header > div {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.app-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.app-header p {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.btn-logout {
+  background: #fff;
+  color: #ba6e3a;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-logout:hover {
+  background: #ffe5cc;
+}
+
+/* ---------- PANELS DE IMAGEN ---------- */
+.image-panels {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 1rem;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.panel h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Área de arrastre / preview */
+.image-drop-area {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: center;
+  padding: 1rem;
+}
+
+.image-drop-area span {
+  pointer-events: none;
+  user-select: none;
+  font-size: 1rem;
+}
+
+.image-drop-area.digitalized {
+  background: rgba(255, 255, 255, 0.08);
+  cursor: default;
+}
+
+.image-drop-area img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* ---------- BOTONES ---------- */
+.buttons-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.buttons-row button {
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  padding: 0.7rem 1.2rem;
+  font-weight: 700;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background: #1976d2;
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #1565c0;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #ccc;
+}
+.btn-secondary:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.buttons-row button:disabled {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  cursor: default;
+}
+
+.panel > button:last-child {
+  background: #fff;
+  color: #1a1a1a;
+  margin-top: 0.3rem;
+}
+
+/* ---------- PARÁMETROS ---------- */
+.params {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 1.5rem;
+  border-radius: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.params h2 {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+}
+
+/* —· Layout en dos columnas para Resolución y Profundidad ·— */
+.param-columns {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.param-columns .param-group {
+  flex: 1;
+}
+
+.param-columns .divider {
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 24px;
+  align-self: stretch;
+}
+
+/* Cada grupo de parámetro */
+.param-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Etiqueta y valor inline */
+.param-group label {
+  font-weight: 700;
+}
+.param-group .value {
+  font-weight: bold;
+  margin-left: 0.5rem;
+}
+
+/* ---------- SLIDERS ---------- */
+input[type="range"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #ccc;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: #2196f3;
+  border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: #2196f3;
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  margin-top: -6px;
+  background: white;
+  border: 2px solid #444;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  background: white;
+  border: 2px solid #444;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]:focus::-webkit-slider-runnable-track {
+  background: #64b5f6;
+}
+
+input[type="range"]:focus::-moz-range-track {
+  background: #64b5f6;
+}
+
+/* ---------- PRESETS ---------- */
+.presets {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.presets button {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-weight: 400;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 15px;
+  border: none;
+}
+.presets button:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- ETIQUETAS LATERALES (Compresión) ---------- */
+.labels-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.3rem;
+}
+
+/* ---------- ERRORES ---------- */
+.error-text {
+  color: #ff6b6b;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* ---------- MEDIA QUERIES ---------- */
+@media (max-width: 768px) {
+  .App {
+    padding: 1rem;
+  }
+  .image-panels {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .param-columns {
+    flex-direction: column;
+  }
+  .param-columns .divider {
+    display: none;
+  }
+  .app-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .panel h2 {
+    font-size: 1.1rem;
+  }
+  .image-drop-area {
+    height: 150px;
+  }
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  .presets button {
+    font-size: 0.75rem;
+  }
+  .labels-range {
+    font-size: 0.7rem;
+  }
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+  .app-header p {
+    font-size: 0.9rem;
+  }
+}
