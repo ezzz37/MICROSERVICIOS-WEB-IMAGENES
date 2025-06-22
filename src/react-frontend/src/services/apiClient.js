@@ -1,15 +1,12 @@
 import axios from 'axios';
 
-// URL base del API Gateway (puerto 8081)
-const BASE_URL = '';
+// URL base del API Gateway (puerto 8081 o el que uses)
+const BASE_URL = ''; // puedes poner http://localhost:8081 si es necesario
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
   timeout: 10000,
-  withCredentials: true,    // si usas cookies de sesión
+  withCredentials: true, // si usas cookies de sesión
 });
 
 // Interceptor de petición: añade el token Bearer si existe
