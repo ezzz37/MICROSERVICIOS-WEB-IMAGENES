@@ -1,36 +1,29 @@
-# --- Etapa base: runtime ---
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-
-# Exponemos HTTP y HTTPS
-EXPOSE 8080
-EXPOSE 8081
-
-# Hacemos que Kestrel escuche en todos los interfaces en esos puertos
-ENV ASPNETCORE_URLS=http://+:8080;https://+:8081
-
-# --- Etapa build: compilación ---
+# Etapa de compilación
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copiamos sólo el .csproj y restauramos paquetes
+# 1) Copia sólo el .csproj y restaura paquetes
 COPY ["Gateway.csproj", "./"]
 RUN dotnet restore "Gateway.csproj"
 
-# Copiamos el resto de la fuente y compilamos
+# 2) Copia el resto del código y publica directo en Release
 COPY . .
-RUN dotnet build "Gateway.csproj" -c Release -o /app/build
-
-# --- Etapa publish: publicación optimizada ---
-FROM build AS publish
 RUN dotnet publish "Gateway.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# --- Etapa final: runtime reducido ---
-FROM base AS final
+# Etapa final: runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Copiamos los artefactos publicados
-COPY --from=publish /app/publish .
+# 3) Copiamos los artefactos publicados
+COPY --from=build /app/publish .
 
-# Punto de entrada
+# 4) Copiamos los JSON de configuración
+COPY ocelot.json      .
+COPY appsettings.json .
+
+# 5) Configuramos Kestrel
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+
+# 6) Arrancamos la DLL
 ENTRYPOINT ["dotnet", "Gateway.dll"]

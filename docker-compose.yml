@@ -1,36 +1,24 @@
-version: "3.8"
+version: '3.8'
 
 services:
   mi-sql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: mi-sql
+    env_file:
+      - ./.env
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourStrong!Passw0rd"
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
     ports:
       - "1433:1433"
     volumes:
       - mi-sql-data:/var/opt/mssql
-    networks:
-      - backend
-
-  init-db:
-    image: mcr.microsoft.com/mssql-tools:latest
-    container_name: init-db
-    depends_on:
-      - mi-sql
-    volumes:
-      - ./init-authservice.sql:/scripts/init-authservice.sql:ro
-    entrypoint:
-      - /opt/mssql-tools/bin/sqlcmd
-      - -S
-      - "mi-sql,1433"
-      - -U
-      - "sa"
-      - -P
-      - "YourStrong!Passw0rd"
-      - -i
-      - "/scripts/init-authservice.sql"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"${SA_PASSWORD}\" -Q \"SELECT 1\""]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
     networks:
       - backend
 
@@ -38,20 +26,29 @@ services:
     build:
       context: ./src/AuthService
       dockerfile: Dockerfile
-    image: authservice:dev
     container_name: authservice
     depends_on:
-      - init-db
+      mi-sql:
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__AuthDb=Server=mi-sql,1433;Database=AuthServiceBD;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
     ports:
       - "32780:8080"
+    networks:
+      - backend
+
+  imagenservice:
+    build:
+      context: ./src/ImagenService
+      dockerfile: Dockerfile
+    container_name: imagenservice
+    depends_on:
+      mi-sql:
+        condition: service_healthy
     environment:
-      ConnectionStrings__AuthDb: >
-        Server=mi-sql,1433;
-        Database=AuthServiceBD;
-        User Id=sa;
-        Password=YourStrong!Passw0rd;
-        TrustServerCertificate=True;
-        Encrypt=False
+      - ConnectionStrings__DefaultConnection=Server=mi-sql,1433;Database=DigitalizacionImagenesBD;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
+    ports:
+      - "32781:8080"
     networks:
       - backend
 
@@ -59,17 +56,36 @@ services:
     build:
       context: ./src/Gateway
       dockerfile: Dockerfile
-    image: gateway:dev
     container_name: gateway
+    restart: on-failure
     depends_on:
-      - authservice
+      authservice:
+        condition: service_started
+      imagenservice:
+        condition: service_started
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+    volumes:
+      - ./src/Gateway/ocelot.json:/app/ocelot.json:ro
+      - ./src/Gateway/appsettings.json:/app/appsettings.json:ro
     ports:
       - "8081:8080"
-    environment:
-      ASPNETCORE_URLS: "http://+:8080"
+      - "8080:8080"
     networks:
       - backend
 
+  frontend:
+    build:
+      context: ./src/react-frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - gateway
+    ports:
+      - "80:80"
+    networks:
+      - backend
+  
 volumes:
   mi-sql-data:
 
