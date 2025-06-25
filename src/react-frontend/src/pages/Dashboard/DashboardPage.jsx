@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import ImageGallery          from '../../components/ImageGallery/ImageGallery'
-import CompareModal          from '../../components/Comparacion/CompareModal'
-import imagenService         from '../../services/imagenService'
+import ImageGallery from '../../components/ImageGallery/ImageGallery'
+import CompareModal from '../../components/Comparacion/CompareModal'
+import imagenService from '../../services/imagenService'
 import processedImageService from '../../services/processedImageService'
 import './Dashboard.css'
 
@@ -21,15 +21,16 @@ export default function DashboardPage({ onLogout }) {
   const [loading, setLoading]                     = useState(false)
   const [error, setError]                         = useState(null)
 
-  const [showGallery, setShowGallery]             = useState(false)
-  const [isCompareOpen, setIsCompareOpen]         = useState(false)
+  const [showGallery, setShowGallery] = useState(false)
+  const [isCompareOpen, setIsCompareOpen] = useState(false)
 
   const DEPTHS = [1, 8, 24]
 
-  // Seleccionar y previsualizar archivo en local
+  // 1) Previsualizar localmente
   const handleFileChange = e => {
     const file = e.target.files[0]
     if (!file) return
+
     setSelectedFile(file)
     setUploadedImage(null)
     setProcessedImage(null)
@@ -41,7 +42,7 @@ export default function DashboardPage({ onLogout }) {
     reader.readAsDataURL(file)
   }
 
-  // Subir imagen al backend
+  // 2) Subir al backend
   const handleUpload = async () => {
     if (!selectedFile) {
       setError('Por favor, selecciona un archivo primero.')
@@ -53,11 +54,13 @@ export default function DashboardPage({ onLogout }) {
     try {
       const formData = new FormData()
       formData.append('Archivo', selectedFile)
-      formData.append('Nombre' , selectedFile.name)
+      formData.append('Nombre', selectedFile.name)
 
       const result = await imagenService.upload(formData)
       setUploadedImage(result)
-      setOriginalPreview(`data:image/png;base64,${result.datosImagenBase64}`)
+      // la propiedad puede venir en camelCase o PascalCase
+      const base64Upload = result.datosImagenBase64 ?? result.DatosImagenBase64
+      setOriginalPreview(`data:image/png;base64,${base64Upload}`)
     } catch (e) {
       setError('Error al subir la imagen: ' + e.message)
     } finally {
@@ -65,7 +68,7 @@ export default function DashboardPage({ onLogout }) {
     }
   }
 
-  // Procesar imagen subida
+  // 3) Procesar la imagen
   const handleProcess = async () => {
     if (!uploadedImage) {
       setError('Primero sube una imagen.')
@@ -89,8 +92,16 @@ export default function DashboardPage({ onLogout }) {
         payload
       )
       setProcessedImage(proc)
-      const mime = proc.algoritmo.toLowerCase() === 'png' ? 'png' : 'jpeg'
-      setProcessedPreview(`data:image/${mime};base64,${proc.datosProcesadosBase64}`)
+
+      // lee tanto camelCase como PascalCase
+      const base64 = proc.datosProcesadosBase64 ?? proc.DatosProcesadosBase64
+      const alg    = (proc.algoritmo ?? proc.Algoritmo).toLowerCase()
+      const mime   = alg === 'png' ? 'png' : 'jpeg'
+      const uri    = `data:image/${mime};base64,${base64}`
+
+      console.log('👉 Preview URI:', uri)
+
+      setProcessedPreview(uri)
     } catch (e) {
       setError('Error al procesar la imagen: ' + e.message)
       setProcessedImage(null)
@@ -100,18 +111,20 @@ export default function DashboardPage({ onLogout }) {
     }
   }
 
-  // Descargar imagen procesada
+  // 4) Descargar procesada
   const handleDownload = () => {
     if (!processedPreview) return
     const link = document.createElement('a')
     link.href = processedPreview
-    link.download = 'imagen-digitalizada.' + (processedImage?.algoritmo.toLowerCase() === 'png' ? 'png' : 'jpg')
+    link.download = `imagen-digitalizada.${
+      processedImage?.algoritmo?.toLowerCase() === 'png' ? 'png' : 'jpg'
+    }`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
   }
 
-  // Reiniciar todo el formulario
+  // 5) Reset completo
   const handleReset = () => {
     setResolution(500)
     setColorDepthIndex(1)
@@ -125,7 +138,7 @@ export default function DashboardPage({ onLogout }) {
     setError(null)
   }
 
-  // Galería
+  // Galería de imágenes cargadas
   const toggleGallery = () => setShowGallery(v => !v)
   const handleImageSelect = image => {
     setShowGallery(false)
@@ -133,19 +146,23 @@ export default function DashboardPage({ onLogout }) {
     setSelectedFile(null)
     setProcessedImage(null)
     setProcessedPreview(null)
-    setOriginalPreview(`data:image/png;base64,${image.datosImagenBase64}`)
+    const base64Old = image.datosImagenBase64 ?? image.DatosImagenBase64
+    setOriginalPreview(`data:image/png;base64,${base64Old}`)
+
     if (image.idImagenProcesada) {
-      processedImageService.getById(image.idImagenProcesada)
+      processedImageService.get(image.idImagenProcesada)
         .then(proc => {
           setProcessedImage(proc)
-          const mime = proc.algoritmo.toLowerCase() === 'png' ? 'png' : 'jpeg'
-          setProcessedPreview(`data:image/${mime};base64,${proc.datosProcesadosBase64}`)
+          const base64Old2 = proc.datosProcesadosBase64 ?? proc.DatosProcesadosBase64
+          const alg2 = (proc.algoritmo ?? proc.Algoritmo).toLowerCase()
+          const mime2 = alg2 === 'png' ? 'png' : 'jpeg'
+          setProcessedPreview(`data:image/${mime2};base64,${base64Old2}`)
         })
         .catch(err => setError(err.message))
     }
   }
 
-  // Sliders de profundidad
+  // Profundidad de color
   const handleColorDepthChange = e => {
     const idx = Number(e.target.value)
     setColorDepthIndex(idx)
@@ -159,7 +176,7 @@ export default function DashboardPage({ onLogout }) {
     }
   }
 
-  // Comparar imágenes
+  // Modal de comparación
   const openCompare = () => setIsCompareOpen(true)
   const closeCompare = () => setIsCompareOpen(false)
 
@@ -177,6 +194,7 @@ export default function DashboardPage({ onLogout }) {
         </header>
 
         <section className="image-panels">
+          {/* Panel Imagen Original */}
           <div className="panel">
             <h2>Imagen Original</h2>
             <div className="image-drop-area">
@@ -221,14 +239,16 @@ export default function DashboardPage({ onLogout }) {
             </div>
           </div>
 
+          {/* Panel Imagen Digitalizada */}
           <div className="panel">
             <h2>Imagen Digitalizada</h2>
             <div className="image-drop-area digitalized">
               {loading && <p>Cargando…</p>}
+
               {!loading && processedPreview && (
                 <img
                   src={processedPreview}
-                  alt="Processed preview"
+                  alt="Preview de la imagen procesada"
                   style={{
                     maxWidth: '100%',
                     maxHeight: '100%',
@@ -236,6 +256,7 @@ export default function DashboardPage({ onLogout }) {
                   }}
                 />
               )}
+
               {!loading && !processedPreview && (
                 <p>No hay imagen procesada</p>
               )}
@@ -252,10 +273,9 @@ export default function DashboardPage({ onLogout }) {
           </div>
         </section>
 
+        {/* Parámetros de Digitalización */}
         <section className="params">
           <h2>Parámetros de Digitalización</h2>
-
-          {/* Layout en dos columnas */}
           <div className="param-columns">
             <div className="param-group">
               <label>Muestreo (Resolución):</label>
@@ -339,17 +359,11 @@ export default function DashboardPage({ onLogout }) {
 
       {showGallery &&
         ReactDOM.createPortal(
-          <ImageGallery
-            onClose={toggleGallery}
-            onSelect={handleImageSelect}
-          />,
+          <ImageGallery onClose={toggleGallery} onSelect={handleImageSelect} />,
           document.body
         )}
 
-      <CompareModal
-        isOpen={isCompareOpen}
-        onClose={closeCompare}
-      />
+      <CompareModal isOpen={isCompareOpen} onClose={closeCompare} />
     </>
   )
 }
