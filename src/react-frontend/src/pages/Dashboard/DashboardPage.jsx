@@ -21,8 +21,8 @@ export default function DashboardPage({ onLogout }) {
   const [loading, setLoading]                     = useState(false)
   const [error, setError]                         = useState(null)
 
-  const [showGallery, setShowGallery] = useState(false)
-  const [isCompareOpen, setIsCompareOpen] = useState(false)
+  const [showGallery, setShowGallery]             = useState(false)
+  const [isCompareOpen, setIsCompareOpen]         = useState(false)
 
   const DEPTHS = [1, 8, 24]
 
@@ -100,7 +100,6 @@ export default function DashboardPage({ onLogout }) {
       const uri    = `data:image/${mime};base64,${base64}`
 
       console.log('👉 Preview URI:', uri)
-
       setProcessedPreview(uri)
     } catch (e) {
       setError('Error al procesar la imagen: ' + e.message)
@@ -180,6 +179,13 @@ export default function DashboardPage({ onLogout }) {
   const openCompare = () => setIsCompareOpen(true)
   const closeCompare = () => setIsCompareOpen(false)
 
+  // Recibe los dos IDs seleccionados y hace algo con ellos
+  const handleCompare = (origId, procId) => {
+    console.log('Comparar IDs:', origId, procId)
+    closeCompare()
+    // TODO: guarda en estado si quieres mostrar debajo
+  }
+
   return (
     <>
       <div className="App">
@@ -244,7 +250,6 @@ export default function DashboardPage({ onLogout }) {
             <h2>Imagen Digitalizada</h2>
             <div className="image-drop-area digitalized">
               {loading && <p>Cargando…</p>}
-
               {!loading && processedPreview && (
                 <img
                   src={processedPreview}
@@ -256,7 +261,6 @@ export default function DashboardPage({ onLogout }) {
                   }}
                 />
               )}
-
               {!loading && !processedPreview && (
                 <p>No hay imagen procesada</p>
               )}
@@ -273,7 +277,6 @@ export default function DashboardPage({ onLogout }) {
           </div>
         </section>
 
-        {/* Parámetros de Digitalización */}
         <section className="params">
           <h2>Parámetros de Digitalización</h2>
           <div className="param-columns">
@@ -363,7 +366,11 @@ export default function DashboardPage({ onLogout }) {
           document.body
         )}
 
-      <CompareModal isOpen={isCompareOpen} onClose={closeCompare} />
+      <CompareModal
+        show={isCompareOpen}
+        onClose={closeCompare}
+        onCompare={handleCompare}
+      />
     </>
   )
 }
