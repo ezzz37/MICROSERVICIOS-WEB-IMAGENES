@@ -5,10 +5,7 @@
       "UpstreamPathTemplate": "/health",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "gateway",
-          "Port": 8080
-        }
+        { "Host": "gateway", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -17,10 +14,7 @@
       "UpstreamPathTemplate": "/auth/login",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice",
-          "Port": 8080
-        }
+        { "Host": "authservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     },
@@ -29,10 +23,7 @@
       "UpstreamPathTemplate": "/auth/refresh",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice",
-          "Port": 8080
-        }
+        { "Host": "authservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     },
@@ -41,10 +32,7 @@
       "UpstreamPathTemplate": "/protected/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice",
-          "Port": 8080
-        }
+        { "Host": "authservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ],
       "AuthenticationOptions": {
@@ -57,10 +45,7 @@
       "UpstreamPathTemplate": "/api/Imagenes",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "imagenservice",
-          "Port": 8080
-        }
+        { "Host": "imagenservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Post", "Options" ]
     },
@@ -69,10 +54,7 @@
       "UpstreamPathTemplate": "/api/Imagenes/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "imagenservice",
-          "Port": 8080
-        }
+        { "Host": "imagenservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Put", "Delete", "Options" ]
     },
@@ -81,10 +63,7 @@
       "UpstreamPathTemplate": "/api/Imagenes/upload",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "imagenservice",
-          "Port": 8080
-        }
+        { "Host": "imagenservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ],
       "HttpHandlerOptions": {
@@ -94,14 +73,38 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/api/ImagenesProcesadas",
+      "UpstreamPathTemplate": "/api/ImagenesProcesadas",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "imagenservice", "Port": 8080 }
+      ],
+      "UpstreamHttpMethod": [ "Get", "Options" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
+      "UpstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "imagenservice", "Port": 8080 }
+      ],
+      "UpstreamHttpMethod": [ "Get", "Options" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
+      "UpstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        { "Host": "imagenservice", "Port": 8080 }
+      ],
+      "UpstreamHttpMethod": [ "Post", "Options" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/Comparaciones",
       "UpstreamPathTemplate": "/api/Comparaciones",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "comparacionservice",
-          "Port": 8080
-        }
+        { "Host": "comparacionservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -110,10 +113,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "comparacionservice",
-          "Port": 8080
-        }
+        { "Host": "comparacionservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -122,10 +122,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/porImagenes",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "comparacionservice",
-          "Port": 8080
-        }
+        { "Host": "comparacionservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -134,22 +131,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/comparar",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        {
-          "Host": "comparacionservice",
-          "Port": 8080
-        }
-      ],
-      "UpstreamHttpMethod": [ "Post", "Options" ]
-    },
-    {
-      "DownstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
-      "UpstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "imagenservice",
-          "Port": 8080
-        }
+        { "Host": "comparacionservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     }
@@ -157,7 +139,7 @@
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:8081",
     "Cors": {
-      "AllowedOrigins": [ "http://localhost" ],
+      "AllowedOrigins": [ "http://localhost:3000" ],
       "AllowedHeaders": [ "*" ],
       "AllowedMethods": [ "*" ],
       "AllowCredentials": true
