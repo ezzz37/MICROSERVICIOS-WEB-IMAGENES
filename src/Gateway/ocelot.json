@@ -99,12 +99,14 @@
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     },
+
+    // — RUTAS DE COMPARACIONES —
     {
       "DownstreamPathTemplate": "/api/Comparaciones",
       "UpstreamPathTemplate": "/api/Comparaciones",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "comparacionservice", "Port": 8080 }
+        { "Host": "imagenservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -113,7 +115,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "comparacionservice", "Port": 8080 }
+        { "Host": "imagenservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -122,7 +124,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/porImagenes",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "comparacionservice", "Port": 8080 }
+        { "Host": "imagenservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -131,7 +133,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/comparar",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "comparacionservice", "Port": 8080 }
+        { "Host": "imagenservice", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     }
