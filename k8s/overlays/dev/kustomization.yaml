@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+namespace: microservicios-web-imagenes
+
+images:
+  - name: authservice
+    newTag: latest
+  - name: imagenservice
+    newTag: latest
+  - name: gateway
+    newTag: latest
+  - name: react-frontend
+    newTag: latest
+
+patchesStrategicMerge:
+  - patch-replicas.yaml
