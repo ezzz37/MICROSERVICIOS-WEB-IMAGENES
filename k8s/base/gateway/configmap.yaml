@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+  namespace: microservicios-web-imagenes
+data:
+  ocelot.json: |
+    {
+      "Routes": [
+        {
+          "DownstreamPathTemplate": "/health",
+          "UpstreamPathTemplate": "/health",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "gateway", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/auth/login",
+          "UpstreamPathTemplate": "/auth/login",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "authservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/auth/refresh",
+          "UpstreamPathTemplate": "/auth/refresh",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "authservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/protected/{everything}",
+          "UpstreamPathTemplate": "/protected/{everything}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "authservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ],
+          "AuthenticationOptions": {
+            "AuthenticationProviderKey": "Bearer",
+            "AllowedScopes": []
+          }
+        },
+        {
+          "DownstreamPathTemplate": "/api/Imagenes",
+          "UpstreamPathTemplate": "/api/Imagenes",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Imagenes/{id}",
+          "UpstreamPathTemplate": "/api/Imagenes/{id}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Put", "Delete", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Imagenes/upload",
+          "UpstreamPathTemplate": "/api/Imagenes/upload",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ],
+          "HttpHandlerOptions": {
+            "AllowAutoRedirect": false,
+            "UseCookieContainer": false,
+            "UseTracing": false
+          }
+        },
+        {
+          "DownstreamPathTemplate": "/api/ImagenesProcesadas",
+          "UpstreamPathTemplate": "/api/ImagenesProcesadas",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
+          "UpstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
+          "UpstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones",
+          "UpstreamPathTemplate": "/api/Comparaciones",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones/{id}",
+          "UpstreamPathTemplate": "/api/Comparaciones/{id}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones/porImagenes",
+          "UpstreamPathTemplate": "/api/Comparaciones/porImagenes",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones/comparar",
+          "UpstreamPathTemplate": "/api/Comparaciones/comparar",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        }
+      ],
+      "GlobalConfiguration": {
+        "BaseUrl": "http://localhost:8081",
+        "Cors": {
+          "AllowedOrigins": [ "http://localhost:3000" ],
+          "AllowedHeaders": [ "*" ],
+          "AllowedMethods": [ "*" ],
+          "AllowCredentials": true
+        }
+      }
+    }
+  appsettings.json: |
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      },
+      "AllowedHosts": "*",
+      "JwtOptions": {
+        "Key": "TU_SECRETO_MUY_LARGO_QUE_NUNCA_COMPARTES",
+        "Issuer": "MiEmpresa.AuthService",
+        "Audience": "MiEmpresa.App",
+        "AccessTokenExpirationMinutes": 60
+      }
+    }
