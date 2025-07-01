@@ -54,9 +54,8 @@ builder.Services
         };
     });
 
-// 6) MVC + JSON options + Swagger
+// 6) MC(modales y controllers) + JSON options + Swagger
 builder.Services
-    // <-- Aquí está la magia: propertyNameCaseInsensitive
     .AddControllers()
     .AddJsonOptions(opt =>
     {
