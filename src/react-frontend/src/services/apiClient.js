@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// URL base del API Gateway (puerto 8081 o el que uses)
 const BASE_URL = ''; // puedes poner http://localhost:8081 si es necesario
 
 const apiClient = axios.create({
@@ -9,7 +8,6 @@ const apiClient = axios.create({
   withCredentials: true, // si usas cookies de sesión
 });
 
-// Interceptor de petición: añade el token Bearer si existe
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');

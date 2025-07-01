@@ -1,5 +1,3 @@
-// src/pages/Dashboard/DashboardPage.jsx
-
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import ImageGallery from '../../components/ImageGallery/ImageGallery'
@@ -137,7 +135,7 @@ export default function DashboardPage({ onLogout }) {
     setError(null)
   }
 
-  // Galería de imágenes cargadas
+  // Galeria de imágenes cargadas
   const toggleGallery = () => setShowGallery(v => !v)
   const handleImageSelect = image => {
     setShowGallery(false)
