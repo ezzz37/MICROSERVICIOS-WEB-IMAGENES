@@ -14,7 +14,7 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1) Cargar appsettings + ocelot.json + envvars
+// Cargar appsettings + ocelot.json + envvars
 builder.Host.ConfigureAppConfiguration((ctx, cfg) =>
 {
     cfg.SetBasePath(Directory.GetCurrentDirectory())
@@ -23,7 +23,7 @@ builder.Host.ConfigureAppConfiguration((ctx, cfg) =>
        .AddEnvironmentVariables();
 });
 
-// 2) CORS: origen EXPLÍCITO para credenciales
+// CORS: origen EXPLÍCITO para credenciales
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
@@ -34,7 +34,7 @@ builder.Services.AddCors(options =>
     );
 });
 
-// 3) JwtOptions + clave
+//JwtOptions + clave
 builder.Services.Configure<JwtOptions>(
     builder.Configuration.GetSection("JwtOptions")
 );
@@ -44,7 +44,7 @@ var jwtOpts = builder.Configuration
     ?? throw new InvalidOperationException("JwtOptions no configurado.");
 var keyBytes = Encoding.UTF8.GetBytes(jwtOpts.Key);
 
-// 4) JWT Bearer
+// JWT Bearer
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
@@ -64,7 +64,7 @@ builder.Services
         };
     });
 
-// 5) Controllers, Swagger y Ocelot
+//Controllers, Swagger y Ocelot
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -73,7 +73,7 @@ builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
 
-// 6) Pipeline
+//Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
