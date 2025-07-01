@@ -2,19 +2,25 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ../../base
+  - auth-service/secret.yaml
+  - auth-service/service.yaml
+  - auth-service/deployment.yaml
 
-namespace: microservicios-web-imagenes
+  - imagen-service/secret.yaml
+  - imagen-service/service.yaml
+  - imagen-service/deployment.yaml
 
-images:
-  - name: authservice
-    newTag: latest
-  - name: imagenservice
-    newTag: latest
-  - name: gateway
-    newTag: latest
-  - name: react-frontend
-    newTag: latest
+  - gateway/configmap.yaml
+  - gateway/service.yaml
+  - gateway/deployment.yaml
 
-patchesStrategicMerge:
-  - patch-replicas.yaml
+  - frontend/configmap.yaml
+  - frontend/service.yaml
+  - frontend/deployment.yaml
+
+  - ingress/ingress.yaml
+
+  - sqlserver/secret.yaml
+  - sqlserver/pvc-template.yaml
+  - sqlserver/service.yaml
+  - sqlserver/statefulset.yaml

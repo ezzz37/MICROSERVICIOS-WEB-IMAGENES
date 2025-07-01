@@ -1,5 +1,3 @@
-// src/components/Comparacion/CompareModal.jsx
-
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './CompareModal.css';

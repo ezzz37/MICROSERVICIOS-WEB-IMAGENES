@@ -1,45 +1,36 @@
-kubernetes/
-├── app-configs/                   # Directorio para ConfigMaps y Secrets compartidos o globales
-│   ├── app-common-configmap.yaml  # Configuración común para microservicios (ej. URLs de otros servicios)
-│   ├── db-credentials-secret.yaml # Credenciales para la(s) base(s) de datos (SQL Server)
-│   └── jwt-secret.yaml            # Secret para la clave JWT (usado por AuthService)
-│
-├── auth-service/
-│   ├── auth-service-deployment.yaml
-│   ├── auth-service-service.yaml
-│   # Nota: Los secretos específicos de este servicio irán en app-configs/ o se montarán desde allí
-│
-├── gateway/
-│   ├── gateway-deployment.yaml
-│   ├── gateway-service.yaml
-│   # Nota: Configuración de Ocelot (ocelot.json) se inyectaría via ConfigMap si es dinámica
-│
-├── imagen-service/
-│   ├── imagen-service-deployment.yaml
-│   ├── imagen-service-service.yaml
-│   # Nota: Los secretos específicos de este servicio irán en app-configs/ o se montarán desde allí
-│
-├── react-frontend/
-│   ├── react-frontend-deployment.yaml
-│   ├── react-frontend-service.yaml
-│   ├── react-frontend-configmap.yaml # Para variables de entorno del frontend (URL del Gateway, etc.)
-│
-├── ingress/
-│   └── main-ingress.yaml          # Define cómo el tráfico externo llega a Gateway y ReactFrontend
-│
-├── sqlserver-db/                  # **CAMBIO CLAVE: Directorio específico para recursos de SQL Server**
-│   # Si usas SQL Server auto-administrado en K8s (NO recomendado para prod)
-│   ├── sqlserver-statefulset.yaml # Define la instancia de SQL Server
-│   ├── sqlserver-service.yaml     # Servicio para acceder a SQL Server internamente
-│   ├── sqlserver-pvc.yaml         # PersistentVolumeClaim para los datos de SQL Server
-│
-├── monitoring/                    # (Opcional, pero muy recomendado) Para Grafana, Prometheus, etc.
-│   ├── prometheus-deployment.yaml
-│   ├── grafana-deployment.yaml
-│   └── ...
-│
-├── rbac/                          # (Opcional) Roles y RoleBindings si necesitas control de acceso granular
-│   └── ...
-│
-├── kustomization.yaml             # Opcional, pero muy útil para gestionar overlays para diferentes entornos
-└── README.md
+k8s/  
+├── base/                              # Recursos “puros”, sin valores de entorno  
+│   ├── namespace.yaml                 # Declara el Namespace donde se desplegará todo  
+│   ├── sqlserver/                     # Carpeta con manifiestos para SQL Server en-cluster (solo dev/demo)  
+│   │   ├── statefulset.yaml           # StatefulSet que define la instancia de SQL Server  
+│   │   ├── service.yaml               # Service ClusterIP para exponer SQL Server internamente  
+│   │   └── pvc-template.yaml          # Plantilla de PVC para almacenamiento persistente de datos  
+│   ├── auth-service/                  # Manifiestos del microservicio AuthService  
+│   │   ├── deployment.yaml            # Deployment (réplicas, contenedor, probes, recursos)  
+│   │   ├── service.yaml               # Service ClusterIP que expone el puerto 8080  
+│   │   └── secret.yaml                # Secret Opaque (SA_PASSWORD o connString)  
+│   ├── imagen-service/                # Manifiestos del microservicio ImagenService  
+│   │   ├── deployment.yaml            # Deployment de ImagenService  
+│   │   ├── service.yaml               # Service ClusterIP para ImagenService  
+│   │   └── secret.yaml                # Secret con credenciales (BD, tokens, etc.)  
+│   ├── gateway/                       # Manifiestos del API Gateway (Ocelot)  
+│   │   ├── deployment.yaml            # Deployment del Gateway (.NET, probes, recursos)  
+│   │   ├── service.yaml               # Service interno del Gateway  
+│   │   └── configmap.yaml             # ConfigMap con ocelot.json y appsettings.json  
+│   ├── frontend/                      # Manifiestos del frontend React servido por Nginx  
+│   │   ├── deployment.yaml            # Deployment del contenedor Nginx + build de React  
+│   │   ├── service.yaml               # Service para exponer el frontend (puerto 80)  
+│   │   └── configmap.yaml             # ConfigMap con variables de entorno para React  
+│   └── ingress/                       # Manifiestos de Ingress NGINX y TLS  
+│       └── ingress.yaml               # Reglas de ruta (/api, /) y configuración TLS  
+│  
+└── overlays/                          # Parches específicos de cada entorno  
+    ├── dev/                           # Overlays para entorno de desarrollo  
+    │   ├── kustomization.yaml         # Aplica base/, namespace=myapp-dev, replicas=1, imageTag=dev-…  
+    │   └── patch-resources.yaml       # Ajusta requests/limits bajos para dev  
+    │  
+    └── prod/                          # Overlays para entorno de producción  
+        ├── kustomization.yaml         # Aplica base/, namespace=myapp-prod, versions semánticas  
+        ├── hpa.yaml                   # HorizontalPodAutoscalers para cada Deployment  
+        ├── networkpolicy.yaml         # NetworkPolicies para aislar comunicación intra-cluster  
+        └── external-db-secret.yaml    # Secret con credenciales de BD gestionada (Azure SQL/RDS)  
