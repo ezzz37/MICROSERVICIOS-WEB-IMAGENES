@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: authservice:latest
-          imagePullPolicy: IfNotPresent
+          image: auth-service:latest
+          imagePullPolicy: Never
           env:
             - name: SA_PASSWORD
               valueFrom:

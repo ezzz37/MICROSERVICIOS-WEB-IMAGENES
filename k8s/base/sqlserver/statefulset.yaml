@@ -28,19 +28,11 @@ spec:
           ports:
             - containerPort: 1433
           livenessProbe:
-            exec:
-              command:
-                - /opt/mssql-tools/bin/sqlcmd
-                - -S
-                - localhost
-                - -U
-                - sa
-                - -P
-                - "$(SA_PASSWORD)"
-                - -Q
-                - "SELECT 1"
-            initialDelaySeconds: 30
+            tcpSocket:
+              port: 1433
+            initialDelaySeconds: 60
             periodSeconds: 30
+            failureThreshold: 5
           volumeMounts:
             - name: mssql-data
               mountPath: /var/opt/mssql

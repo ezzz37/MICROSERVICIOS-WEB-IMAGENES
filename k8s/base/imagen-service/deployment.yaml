@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: imagen-service
-          image: imagenservice:latest
-          imagePullPolicy: IfNotPresent
+          image: imagen-service:latest
+          imagePullPolicy: Never
           env:
             - name: SA_PASSWORD
               valueFrom:
