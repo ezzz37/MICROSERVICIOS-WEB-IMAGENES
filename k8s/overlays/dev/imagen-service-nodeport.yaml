@@ -1,13 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: imagen-service
-  labels: { app: imagen-service }
+  name: imagen-service-nodeport
+  labels:
+    app: imagen-service
+    environment: dev
 spec:
+  type: NodePort
   ports:
     - port: 8080
       targetPort: 8080
+      nodePort: 30081
       protocol: TCP
+      name: http
   selector:
     app: imagen-service
-  type: ClusterIP
+

@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: react-frontend
-  namespace: microservicios-web-imagenes
   labels:
     app: react-frontend
 spec:
@@ -18,7 +17,7 @@ spec:
       containers:
         - name: react-frontend
           image: react-frontend:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           ports:
             - containerPort: 80
           envFrom:

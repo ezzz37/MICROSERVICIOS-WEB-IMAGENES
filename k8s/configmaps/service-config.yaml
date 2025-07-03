@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-config
+  namespace: microservices
+data:
+  # User Service Configuration
+  USER_SERVICE_URL: "http://user-service.microservices.svc.cluster.local:8080"
+  USER_SERVICE_TIMEOUT: "30"
+  
+  # Product Service Configuration
+  PRODUCT_SERVICE_URL: "http://product-service.microservices.svc.cluster.local:8080"
+  PRODUCT_SERVICE_TIMEOUT: "30"
+  
+  # Order Service Configuration
+  ORDER_SERVICE_URL: "http://order-service.microservices.svc.cluster.local:8080"
+  ORDER_SERVICE_TIMEOUT: "30"
+  
+  # Payment Service Configuration
+  PAYMENT_SERVICE_URL: "http://payment-service.microservices.svc.cluster.local:8080"
+  PAYMENT_SERVICE_TIMEOUT: "30"
+  
+  # Notification Service Configuration
+  NOTIFICATION_SERVICE_URL: "http://notification-service.microservices.svc.cluster.local:8080"
+  NOTIFICATION_SERVICE_TIMEOUT: "30"
+  
+  # File Storage Configuration
+  FILE_STORAGE_URL: "http://file-service.microservices.svc.cluster.local:8080"
+  FILE_STORAGE_TIMEOUT: "30"
+  MAX_FILE_SIZE: "10485760"  # 10MB
+  ALLOWED_FILE_TYPES: "jpg,jpeg,png,gif,pdf,doc,docx"
+  
+  # External Services
+  EXTERNAL_API_TIMEOUT: "60"
+  RETRY_ATTEMPTS: "3"
+  RETRY_DELAY: "5"
+
