@@ -17,7 +17,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: frontend
+                name: react-frontend
                 port:
                   number: 80
     - host: frontend.microservices.local
@@ -27,7 +27,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: frontend
+                name: react-frontend
                 port:
                   number: 80
 

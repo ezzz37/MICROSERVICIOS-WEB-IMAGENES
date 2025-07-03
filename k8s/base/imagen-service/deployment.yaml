@@ -16,33 +16,25 @@ spec:
     spec:
       containers:
         - name: imagen-service
-          image: imagen-service:latest
+          image: imagen-service:dev
           imagePullPolicy: Never
           env:
             - name: SA_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: imagen-service-secret
+                  name: sqlserver-secret
                   key: SA_PASSWORD
             - name: ConnectionStrings__DefaultConnection
-              value: >-
-                Server=sqlserver:1433;
-                Database=DigitalizacionImagenesBD;
-                User Id=sa;
-                Password=$(SA_PASSWORD);
-                TrustServerCertificate=True;
-                Encrypt=False
+              value: "Server=sqlserver,1433;Database=DigitalizacionImagenesBD;User Id=sa;Password=$(SA_PASSWORD);TrustServerCertificate=True;Encrypt=False"
           ports:
             - containerPort: 8080
           readinessProbe:
-            httpGet:
-              path: /health
+            tcpSocket:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /health
+            tcpSocket:
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 20

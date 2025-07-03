@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Script to manage microservices namespace and resources
-
 NAMESPACE="microservices"
 K8S_DIR="$(dirname "$0")"
 
