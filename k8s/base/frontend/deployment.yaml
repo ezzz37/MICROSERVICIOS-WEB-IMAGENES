@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: react-frontend
-  namespace: microservicios-web-imagenes
   labels:
     app: react-frontend
 spec:

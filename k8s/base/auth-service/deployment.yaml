@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-service
-  namespace: microservicios-web-imagenes
   labels:
     app: auth-service
 spec:

@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: sqlserver
-  namespace: microservicios-web-imagenes
 spec:
   serviceName: sqlserver
   replicas: 1

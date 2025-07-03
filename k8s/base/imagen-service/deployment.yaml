@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: imagen-service
-  namespace: microservicios-web-imagenes
   labels:
     app: imagen-service
 spec:
