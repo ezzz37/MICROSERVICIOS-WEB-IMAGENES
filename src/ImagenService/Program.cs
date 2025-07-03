@@ -9,12 +9,11 @@ using ImagenService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 0) Configuración
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddEnvironmentVariables();
 
-// 1) EF Core
+//EF Core
 builder.Services.AddDbContext<ImagenDbContext>(opts =>
     opts.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -23,10 +22,10 @@ builder.Services.AddDbContext<ImagenDbContext>(opts =>
     .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
 );
 
-// 2) Registrar sólo el servicio de procesamiento de imágenes
+// Registrar sólo el servicio de procesamiento de imágenes
 builder.Services.AddScoped<IImageProcessorService, ImageProcessorService>();
 
-// 3) MVC + Swagger
+// MC + Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -41,14 +40,14 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// 4) Aplicar migraciones al arrancar
+//Aplicar migraciones al arrancar
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ImagenDbContext>();
     db.Database.Migrate();
 }
 
-// 5) Swagger siempre activo
+// Swagger siempre activo
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {

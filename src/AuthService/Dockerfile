@@ -1,13 +1,11 @@
-# --------- 1) Base (runtime) ---------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-# Exponer solo HTTP en el puerto 8080\ nEXPOSE 8080
-
+# Exponer el puerto 8080 para la aplicación
 # Forzar a ASP.NET Core a escuchar únicamente en HTTP
 ENV ASPNETCORE_URLS=http://+:8080
 
-# --------- 2) Build (SDK) ------------
+# build sdk
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -19,14 +17,14 @@ RUN dotnet restore "AuthService.csproj"
 COPY . .
 RUN dotnet build "AuthService.csproj" -c Release -o /app/build
 
-# --------- 3) Publish ----------------
+#publish
 FROM build AS publish
 RUN dotnet publish "AuthService.csproj" \
     -c Release \
     -o /app/publish \
     /p:UseAppHost=false
 
-# --------- 4) Final ------------------
+# final
 FROM base AS final
 WORKDIR /app
 

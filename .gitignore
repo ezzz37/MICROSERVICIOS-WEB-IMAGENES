@@ -10,7 +10,7 @@ bin/
 obj/
 
 # Entity Framework Core Migrations
-**/Migrations/
+#**/Migrations/
 
 # ASP.NET Core секретos
 *.Development.json

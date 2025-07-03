@@ -1,5 +1,3 @@
-// src/utils/authHelpers.js
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import authService from '../services/authService';
 
@@ -59,7 +57,7 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) {
-    throw new Error('useAuth must be used inside an AuthProvider');
+    throw new Error('useAuth debe usarse dentro de un AuthProvider');
   }
   return ctx;
 }

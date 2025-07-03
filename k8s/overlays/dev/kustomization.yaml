@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - auth-service/secret.yaml
+  - auth-service/service.yaml
+  - auth-service/deployment.yaml
+
+  - imagen-service/secret.yaml
+  - imagen-service/service.yaml
+  - imagen-service/deployment.yaml
+
+  - gateway/configmap.yaml
+  - gateway/service.yaml
+  - gateway/deployment.yaml
+
+  - frontend/configmap.yaml
+  - frontend/service.yaml
+  - frontend/deployment.yaml
+
+  - ingress/ingress.yaml
+
+  - sqlserver/secret.yaml
+  - sqlserver/pvc-template.yaml
+  - sqlserver/service.yaml
+  - sqlserver/statefulset.yaml
