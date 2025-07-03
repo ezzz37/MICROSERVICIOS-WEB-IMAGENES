@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: microservicios-web-imagenes
+data:
+  REACT_APP_API_URL: "http://gateway:8080"

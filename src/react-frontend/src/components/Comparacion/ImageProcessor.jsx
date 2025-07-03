@@ -1,4 +1,3 @@
-// src/components/ImageProcessor/ImageProcessor.jsx
 import React, { useState } from 'react';
 import imagenService         from '../../services/imagenService';
 import processedImageService from '../../services/processedImageService';

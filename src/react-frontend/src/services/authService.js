@@ -1,9 +1,6 @@
-// src/services/authService.js
-
 import apiClient from './apiClient';
 
 /**
- * Realiza login enviando username y password como parámetros separados.
  * @param {string} username
  * @param {string} password
  * @returns {Promise<{ accessToken: string }>}
@@ -18,7 +15,6 @@ const login = async (username, password) => {
 };
 
 /**
- * Refresca el token de acceso usando la cookie/session actual.
  * @returns {Promise<{ accessToken: string }>}
  */
 const refreshToken = async () => {

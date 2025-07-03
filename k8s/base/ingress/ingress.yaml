@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+  namespace: microservicios-web-imagenes
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: dev.example.com
+      http:
+        paths:
+          - path: /api/auth
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port: { number: 8080 }
+          - path: /api/imagen
+            pathType: Prefix
+            backend:
+              service:
+                name: imagen-service
+                port: { number: 8080 }
+          - path: /api/gateway
+            pathType: Prefix
+            backend:
+              service:
+                name: gateway
+                port: { number: 8080 }
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: react-frontend
+                port: { number: 80 }

@@ -9,7 +9,6 @@ export default function ImageGallery({ onClose, onSelect }) {
   const [error, setError]       = useState(null);
 
   useEffect(() => {
-    // Al abrir la galería, traemos la lista de imágenes
     imagenService.list()
       .then(data => setImages(data))
       .catch(() => setError('Error al cargar las imágenes.'))
