@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth-service-ingress
+  labels:
+    app: auth-service
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: microservices.local
+      http:
+        paths:
+          - path: /api/auth(/.*)?$
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 8080
+    - host: auth.microservices.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 8080
+

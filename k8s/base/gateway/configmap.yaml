@@ -2,26 +2,16 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gateway-config
-  namespace: microservicios-web-imagenes
 data:
   ocelot.json: |
     {
       "Routes": [
         {
-          "DownstreamPathTemplate": "/health",
-          "UpstreamPathTemplate": "/health",
-          "DownstreamScheme": "http",
-          "DownstreamHostAndPorts": [
-            { "Host": "gateway", "Port": 8080 }
-          ],
-          "UpstreamHttpMethod": [ "Get", "Options" ]
-        },
-        {
           "DownstreamPathTemplate": "/auth/login",
           "UpstreamPathTemplate": "/auth/login",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "authservice", "Port": 8080 }
+            { "Host": "auth-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Post", "Options" ]
         },
@@ -30,7 +20,7 @@ data:
           "UpstreamPathTemplate": "/auth/refresh",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "authservice", "Port": 8080 }
+            { "Host": "auth-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Post", "Options" ]
         },
@@ -39,7 +29,7 @@ data:
           "UpstreamPathTemplate": "/protected/{everything}",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "authservice", "Port": 8080 }
+            { "Host": "auth-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Options" ],
           "AuthenticationOptions": {
@@ -52,7 +42,7 @@ data:
           "UpstreamPathTemplate": "/api/Imagenes",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Post", "Options" ]
         },
@@ -61,7 +51,7 @@ data:
           "UpstreamPathTemplate": "/api/Imagenes/{id}",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Put", "Delete", "Options" ]
         },
@@ -70,7 +60,7 @@ data:
           "UpstreamPathTemplate": "/api/Imagenes/upload",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Post", "Options" ],
           "HttpHandlerOptions": {
@@ -84,7 +74,7 @@ data:
           "UpstreamPathTemplate": "/api/ImagenesProcesadas",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Options" ]
         },
@@ -93,7 +83,7 @@ data:
           "UpstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Options" ]
         },
@@ -102,7 +92,7 @@ data:
           "UpstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Post", "Options" ]
         },
@@ -111,7 +101,7 @@ data:
           "UpstreamPathTemplate": "/api/Comparaciones",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Options" ]
         },
@@ -120,7 +110,7 @@ data:
           "UpstreamPathTemplate": "/api/Comparaciones/{id}",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Options" ]
         },
@@ -129,7 +119,7 @@ data:
           "UpstreamPathTemplate": "/api/Comparaciones/porImagenes",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Get", "Options" ]
         },
@@ -138,7 +128,7 @@ data:
           "UpstreamPathTemplate": "/api/Comparaciones/comparar",
           "DownstreamScheme": "http",
           "DownstreamHostAndPorts": [
-            { "Host": "imagenservice", "Port": 8080 }
+            { "Host": "imagen-service", "Port": 8080 }
           ],
           "UpstreamHttpMethod": [ "Post", "Options" ]
         }
