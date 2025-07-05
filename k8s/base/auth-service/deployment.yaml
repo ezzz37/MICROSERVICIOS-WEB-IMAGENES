@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-service
-  namespace: microservicios-web-imagenes
   labels:
     app: auth-service
 spec:
@@ -17,8 +16,8 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: authservice:latest
-          imagePullPolicy: IfNotPresent
+          image: auth-service:dev
+          imagePullPolicy: Never
           env:
             - name: SA_PASSWORD
               valueFrom:
@@ -26,24 +25,16 @@ spec:
                   name: auth-service-secret
                   key: SA_PASSWORD
             - name: ConnectionStrings__AuthDb
-              value: >-
-                Server=sqlserver:1433;
-                Database=AuthServiceBD;
-                User Id=sa;
-                Password=$(SA_PASSWORD);
-                TrustServerCertificate=True;
-                Encrypt=False
+              value: "Server=sqlserver,1433;Database=AuthServiceBD;User Id=sa;Password=$(SA_PASSWORD);TrustServerCertificate=True;Encrypt=False"
           ports:
             - containerPort: 8080
           readinessProbe:
-            httpGet:
-              path: /health
+            tcpSocket:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /health
+            tcpSocket:
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 20
