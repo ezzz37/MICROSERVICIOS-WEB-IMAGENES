@@ -33,4 +33,4 @@ k8s/
         ├── kustomization.yaml         # Aplica base/, namespace=myapp-prod, versions semánticas  
         ├── hpa.yaml                   # HorizontalPodAutoscalers para cada Deployment  
         ├── networkpolicy.yaml         # NetworkPolicies para aislar comunicación intra-cluster  
-        └── external-db-secret.yaml    # Secret con credenciales de BD gestionada (Azure SQL/RDS)  
+        └── external-db-secret.yaml    # Secret con credenciales de BD gestionada (Azure SQL/RDS)
