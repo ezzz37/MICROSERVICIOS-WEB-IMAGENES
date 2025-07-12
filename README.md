@@ -65,13 +65,42 @@ El sistema sigue una arquitectura de microservicios, donde cada servicio se enca
 MICROSERVICIOS-WEB-IMAGENES/
 │
 ├── docker-compose.yml
-├── k8s/
-│   ├── gateway-deployment.yaml
-│   ├── authservice-deployment.yaml
-│   ├── userservice-deployment.yaml
-│   ├── imagenservice-deployment.yaml
-│   ├── reactfrontend-deployment.yaml
-│   └── namespaces.yaml
+├──k8s/  
+├── base/
+│   ├── namespace.yaml
+│   ├── sqlserver/ 
+│   │   ├── statefulset.yaml 
+│   │   ├── service.yaml  
+│   │   └── pvc-template.yaml 
+│   ├── auth-service/  
+│   │   ├── deployment.yaml 
+│   │   ├── service.yaml
+│   │   └── secret.yaml
+│   ├── imagen-service/
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── secret.yaml
+│   ├── gateway/
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── configmap.yaml
+│   ├── frontend/ 
+│   │   ├── deployment.yaml  
+│   │   ├── service.yaml
+│   │   └── configmap.yaml 
+│   └── ingress/
+│       └── ingress.yaml
+│  
+└── overlays/
+│    ├── dev/
+│    │   ├── kustomization.yaml 
+│    │   └── patch-resources.yaml 
+│    │  
+│    └── prod/ 
+│        ├── kustomization.yaml 
+│        ├── hpa.yaml
+│        ├── networkpolicy.yaml
+│        └── external-db-secret.yaml
 │
 ├── src/
 │   ├── Gateway/

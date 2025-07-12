@@ -1,0 +1,199 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-ocelot-config
+  namespace: microservicios-web-imagenes
+data:
+  ocelot.json: |
+    {
+      "Routes": [
+        {
+          "DownstreamPathTemplate": "/health",
+          "UpstreamPathTemplate": "/health",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "gateway-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/auth/login",
+          "UpstreamPathTemplate": "/auth/login",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "authservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/auth/refresh",
+          "UpstreamPathTemplate": "/auth/refresh",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "authservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/protected/{everything}",
+          "UpstreamPathTemplate": "/protected/{everything}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "authservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ],
+          "AuthenticationOptions": {
+            "AuthenticationProviderKey": "Bearer",
+            "AllowedScopes": []
+          }
+        },
+        {
+          "DownstreamPathTemplate": "/api/Imagenes",
+          "UpstreamPathTemplate": "/api/Imagenes",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Imagenes/{id}",
+          "UpstreamPathTemplate": "/api/Imagenes/{id}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Put", "Delete", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Imagenes/upload",
+          "UpstreamPathTemplate": "/api/Imagenes/upload",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ],
+          "HttpHandlerOptions": {
+            "AllowAutoRedirect": false,
+            "UseCookieContainer": false,
+            "UseTracing": false
+          }
+        },
+        {
+          "DownstreamPathTemplate": "/api/ImagenesProcesadas",
+          "UpstreamPathTemplate": "/api/ImagenesProcesadas",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
+          "UpstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
+          "UpstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones",
+          "UpstreamPathTemplate": "/api/Comparaciones",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones/{id}",
+          "UpstreamPathTemplate": "/api/Comparaciones/{id}",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones/porImagenes",
+          "UpstreamPathTemplate": "/api/Comparaciones/porImagenes",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Get", "Options" ]
+        },
+        {
+          "DownstreamPathTemplate": "/api/Comparaciones/comparar",
+          "UpstreamPathTemplate": "/api/Comparaciones/comparar",
+          "DownstreamScheme": "http",
+          "DownstreamHostAndPorts": [
+            { "Host": "imagenservice-service.microservicios-web-imagenes.svc.cluster.local", "Port": 8080 }
+          ],
+          "UpstreamHttpMethod": [ "Post", "Options" ]
+        }
+      ],
+      "GlobalConfiguration": {
+        "BaseUrl": "http://localhost:8081",
+        "Cors": {
+          "AllowedOrigins": [ "*" ],
+          "AllowedHeaders": [ "*" ],
+          "AllowedMethods": [ "*" ],
+          "AllowCredentials": true
+        }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: microservicios-web-imagenes
+  labels:
+    app: gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: miregistroacr1751945372.azurecr.io/gateway:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ASPNETCORE_URLS
+          value: "http://+:8080"
+        volumeMounts:
+        - name: ocelot-config
+          mountPath: /app/ocelot.json
+          subPath: ocelot.json
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: ocelot-config
+        configMap:
+          name: gateway-ocelot-config
+

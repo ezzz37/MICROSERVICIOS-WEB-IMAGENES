@@ -28,3 +28,12 @@ yarn-error.log*
 Thumbs.db
 .DS_Store
 
+# Azure deployment temporales
+*.msi
+archive/
+*.pid
+
+# Kubernetes temporales
+kubeconfig
+*.kubeconfig
+
