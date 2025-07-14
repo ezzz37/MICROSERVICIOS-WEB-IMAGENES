@@ -1,0 +1,27 @@
+{
+  "dashboard": {
+    "title": "Microservicios Web Imagenes",
+    "panels": [
+      {
+        "title": "CPU Usage por Pod",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{namespace=\"microservicios-web-imagenes\",pod!=\"\"}[5m])",
+            "legendFormat": "{{pod}}"
+          }
+        ]
+      },
+      {
+        "title": "Memory Usage por Pod",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{namespace=\"microservicios-web-imagenes\",pod!=\"\"}",
+            "legendFormat": "{{pod}}"
+          }
+        ]
+      }
+    ]
+  }
+}
