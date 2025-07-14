@@ -3,7 +3,7 @@
 set -e
 
 RESOURCE_GROUP="microservicios-rg"
-ACR_NAME="miregistroacr1751945372"
+ACR_NAME="miregistroacr1752465648"
 AKS_CLUSTER_NAME="microservicios-aks"
 LOCATION="westus2"
 NODE_COUNT=2

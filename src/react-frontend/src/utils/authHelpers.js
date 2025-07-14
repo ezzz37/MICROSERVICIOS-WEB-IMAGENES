@@ -20,9 +20,9 @@ export function AuthProvider({ children }) {
 
   // Refresca el token cuando haga falta (revalida en backend)
   const refresh = async () => {
-    const { accessToken } = await authService.refreshToken();
-    localStorage.setItem('token', accessToken);
-    setIsAuthenticated(true);
+    // Temporalmente deshabilitado para evitar errores CORS
+    console.log('Refresh disabled to avoid CORS issues');
+    return Promise.reject('Refresh not implemented');
   };
 
   // Cierra sesión: borra token y marca como no autenticado
@@ -32,20 +32,16 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   };
 
-  // Al montar, intento un refresh real en el backend.
-  // Si falla, fuerza al login; si pasa, deja el dashboard accesible.
+  // Al montar, siempre empieza sin autenticar
+  // El usuario debe hacer login explícitamente
   useEffect(() => {
-    (async () => {
-      try {
-        const { accessToken } = await authService.refreshToken();
-        localStorage.setItem('token', accessToken);
-        setIsAuthenticated(true);
-      } catch {
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
-      }
-    })();
+    // Limpiar cualquier token anterior para forzar login
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
   }, []);
+
+  // DEBUG: Log para verificar el baseURL
+  console.log('API Client configured for:', window.location.origin);
 
   return (
     <AuthContext.Provider value={{ login, refresh, logout, isAuthenticated }}>

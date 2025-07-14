@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const BASE_URL = ''; // puedes poner http://localhost:8081 si es necesario
+// Usar rutas relativas para que nginx haga el proxy
+// Build timestamp: 2025-07-14T07:56:00Z - LOGIN REQUIRED ALWAYS
+const BASE_URL = ''; // Rutas relativas: /auth/login, /api/imagenes, etc.
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -14,6 +16,8 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // DEBUG: Log de todas las requests
+    console.log('API Request:', config.method?.toUpperCase(), config.url, 'BaseURL:', config.baseURL);
     return config;
   },
   (error) => Promise.reject(error)

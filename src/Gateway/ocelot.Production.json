@@ -5,7 +5,7 @@
       "UpstreamPathTemplate": "/health",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "gateway", "Port": 8080 }
+        { "Host": "authservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -99,8 +99,6 @@
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     },
-
-    // — RUTAS DE COMPARACIONES —
     {
       "DownstreamPathTemplate": "/api/Comparaciones",
       "UpstreamPathTemplate": "/api/Comparaciones",
@@ -139,9 +137,9 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://4.149.142.85:8080",
+    "BaseUrl": "http://gateway-service:8080",
     "Cors": {
-      "AllowedOrigins": [ "http://172.179.63.132", "http://localhost:3000" ],
+      "AllowedOrigins": [ "*" ],
       "AllowedHeaders": [ "*" ],
       "AllowedMethods": [ "*" ],
       "AllowCredentials": true
