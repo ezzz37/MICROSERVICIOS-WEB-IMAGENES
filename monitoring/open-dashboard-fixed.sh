@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "=== 🚀 KUBERNETES DASHBOARD - MICROSERVICIOS AZURE ==="
+echo "=== KUBERNETES DASHBOARD - MICROSERVICIOS AZURE ==="
 echo ""
 
 # Verificar que kubectl esté funcionando
@@ -43,7 +43,7 @@ echo "=================================================="
 echo ""
 
 # Iniciar el proxy en segundo plano
-echo "🚀 Iniciando proxy de Kubernetes..."
+echo "Iniciando proxy de Kubernetes..."
 kubectl proxy --port=8001 &
 PROXY_PID=$!
 
