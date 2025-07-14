@@ -27,7 +27,7 @@ builder.Host.ConfigureAppConfiguration((ctx, cfg) =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
-        policy.WithOrigins("http://localhost")
+        policy.WithOrigins("http://172.179.63.132", "http://localhost", "http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()

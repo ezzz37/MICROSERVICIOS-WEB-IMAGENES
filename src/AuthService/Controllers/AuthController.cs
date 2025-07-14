@@ -45,5 +45,12 @@ namespace AuthService.Controllers
             var token = _tokenService.GenerateToken(userId.Value, req.Username);
             return Ok(new LoginResponse(token));
         }
+
+        [HttpPost("refresh")]
+        public IActionResult Refresh()
+        {
+            // Por ahora, retornamos 404 para que el frontend no se cuelgue
+            return NotFound(new { Message = "Endpoint de refresh no implementado" });
+        }
     }
 }
