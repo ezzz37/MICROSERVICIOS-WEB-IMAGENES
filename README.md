@@ -268,3 +268,510 @@ Asegúrate de tener configurado un clúster de Kubernetes y los secretos/configm
 
 - **ezzz37**  
   [GitHub](https://github.com/ezzz37)
+
+```
+MICROSERVICIOS-WEB-IMAGENES
+├─ .env
+├─ .idea
+│  ├─ MICROSERVICIOS-WEB-IMAGENES.iml
+│  ├─ modules.xml
+│  ├─ vcs.xml
+│  └─ workspace.xml
+├─ azure-deployment
+│  ├─ configs
+│  ├─ k8s-manifests
+│  │  ├─ final-microservices.yaml
+│  │  ├─ fix-frontend.yaml
+│  │  ├─ gateway-config.yaml
+│  │  ├─ k8s-deployment.yaml
+│  │  └─ update-microservices-azure-sql.yaml
+│  ├─ README-AZURE-DEPLOYMENT.md
+│  ├─ README.md
+│  └─ scripts
+│     ├─ deploy-aks-simple.sh
+│     ├─ deploy-app.sh
+│     ├─ deploy-azure-sql.sh
+│     └─ simple-deploy.sh
+├─ azure-sql-secret.yaml
+├─ cleanup-azure.sh
+├─ deploy-to-azure.sh
+├─ docker-compose.yml
+├─ docs
+├─ ImagenService
+├─ k8s
+│  ├─ base
+│  │  ├─ auth-service
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  ├─ secret.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ frontend
+│  │  │  ├─ configmap.yaml
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ gateway
+│  │  │  ├─ configmap.yaml
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ imagen-service
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  ├─ secret.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ ingress
+│  │  │  ├─ ingress.yaml
+│  │  │  └─ kustomization.yaml
+│  │  └─ sqlserver
+│  │     ├─ kustomization.yaml
+│  │     ├─ pvc-template.yaml
+│  │     ├─ secret.yaml
+│  │     ├─ service.yaml
+│  │     └─ statefulset.yaml
+│  ├─ configmaps
+│  │  ├─ app-config.yaml
+│  │  └─ service-config.yaml
+│  ├─ KUBERNETES_MANIFESTS.md
+│  ├─ manage-namespace.sh
+│  ├─ namespace.yaml
+│  ├─ overlays
+│  │  ├─ dev
+│  │  │  ├─ auth-service-nodeport.yaml
+│  │  │  ├─ frontend-nodeport.yaml
+│  │  │  ├─ gateway-nodeport.yaml
+│  │  │  ├─ imagen-service-nodeport.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  └─ patch-resources.yaml
+│  │  └─ prod
+│  │     ├─ external-db-secret.yaml
+│  │     ├─ hpa.yaml
+│  │     ├─ kustomization.yaml
+│  │     └─ networkpolicy.yaml
+│  ├─ README.md
+│  └─ secrets
+│     ├─ api-secret.yaml
+│     ├─ database-secret.yaml
+│     └─ tls-secret.yaml
+├─ k8s-deployment-updated.yaml
+├─ k8s-deployment.yaml
+├─ README.md
+├─ reiniciarContenedores.sh
+├─ src
+│  ├─ AuthService
+│  │  ├─ .dockerignore
+│  │  ├─ appsettings.json
+│  │  ├─ AuthService.csproj
+│  │  ├─ AuthService.http
+│  │  ├─ AuthService.sln
+│  │  ├─ Controllers
+│  │  │  ├─ AuthController.cs
+│  │  │  └─ ProtectedController.cs
+│  │  ├─ Data
+│  │  │  └─ AuthDbContext.cs
+│  │  ├─ Dockerfile
+│  │  ├─ Helpers
+│  │  │  ├─ EncryptionHelper.cs
+│  │  │  ├─ EncryptionOptions.cs
+│  │  │  └─ JwtOptions.cs
+│  │  ├─ Migrations
+│  │  │  ├─ 20250616235925_InitialCreate.cs
+│  │  │  ├─ 20250616235925_InitialCreate.Designer.cs
+│  │  │  ├─ 20250617020843_InitAuthDb.cs
+│  │  │  ├─ 20250617020843_InitAuthDb.Designer.cs
+│  │  │  └─ AuthDbContextModelSnapshot.cs
+│  │  ├─ Models
+│  │  │  ├─ Credencial.cs
+│  │  │  ├─ LoginRequest.cs
+│  │  │  ├─ LoginResult.cs
+│  │  │  └─ Usuario.cs
+│  │  ├─ Program.cs
+│  │  ├─ Program.cs.bak
+│  │  ├─ Properties
+│  │  │  ├─ launchSettings.json
+│  │  │  ├─ serviceDependencies.json
+│  │  │  └─ serviceDependencies.local.json
+│  │  └─ Services
+│  │     ├─ ITokenService.cs
+│  │     ├─ IUserService.cs
+│  │     ├─ TokenService.cs
+│  │     └─ UserService.cs
+│  ├─ Gateway
+│  │  ├─ .dockerignore
+│  │  ├─ appsettings.json
+│  │  ├─ Dockerfile
+│  │  ├─ Gateway.csproj
+│  │  ├─ Gateway.http
+│  │  ├─ Gateway.sln
+│  │  ├─ Helpers
+│  │  │  └─ JwtOptions.cs
+│  │  ├─ ocelot.json
+│  │  ├─ ocelot.Production.json
+│  │  ├─ Program.cs
+│  │  ├─ Properties
+│  │  │  └─ launchSettings.json
+│  │  └─ WeatherForecast.cs
+│  ├─ ImagenService
+│  │  ├─ .dockerignore
+│  │  ├─ appsettings.json
+│  │  ├─ Controllers
+│  │  │  ├─ ComparacionesController.cs
+│  │  │  ├─ ImagenesController.cs
+│  │  │  └─ ImagenesProcesadasController.cs
+│  │  ├─ Data
+│  │  │  ├─ ImagenDbContext.cs
+│  │  │  └─ Migrations
+│  │  ├─ Dockerfile
+│  │  ├─ DTOs
+│  │  │  ├─ ComparacionResponseDto.cs
+│  │  │  ├─ CompararDto.cs
+│  │  │  ├─ ImagenDto.cs
+│  │  │  ├─ ImagenProcesadaResponseDto.cs
+│  │  │  ├─ ImagenProcesadaSimpleDto.cs
+│  │  │  ├─ ImagenSimpleDto.cs
+│  │  │  ├─ ImagenUploadDto.cs
+│  │  │  ├─ LoginRequestDto.cs
+│  │  │  ├─ LoginResponseDto.cs
+│  │  │  └─ ProcesarDto.cs
+│  │  ├─ ImagenService.csproj
+│  │  ├─ ImagenService.http
+│  │  ├─ ImagenService.sln
+│  │  ├─ Init
+│  │  │  └─ init.sql
+│  │  ├─ Migrations
+│  │  │  ├─ 20250618071845_InitialCreate.cs
+│  │  │  ├─ 20250618071845_InitialCreate.Designer.cs
+│  │  │  └─ ImagenDbContextModelSnapshot.cs
+│  │  ├─ Models
+│  │  │  ├─ Comparacion.cs
+│  │  │  └─ Imagen.cs
+│  │  ├─ Program.cs
+│  │  ├─ Properties
+│  │  │  ├─ launchSettings.json
+│  │  │  ├─ serviceDependencies.json
+│  │  │  └─ serviceDependencies.local.json
+│  │  ├─ Services
+│  │  │  ├─ IImageProcessorService.cs
+│  │  │  ├─ ImageProcessorService.cs.cs
+│  │  │  ├─ IUsuarioService.cs
+│  │  │  └─ UsuarioService.cs
+│  │  ├─ WeatherForecast.cs
+│  │  └─ Worker
+│  │     └─ ImagenWorker.cs
+│  └─ react-frontend
+│     ├─ .env
+│     ├─ Dockerfile
+│     ├─ nginx.conf
+│     ├─ package-lock.json
+│     ├─ package.json
+│     ├─ public
+│     │  ├─ favicon.ico
+│     │  ├─ index.html
+│     │  ├─ logo192.png
+│     │  ├─ logo512.png
+│     │  ├─ manifest.json
+│     │  └─ robots.txt
+│     ├─ README.md
+│     ├─ resetearContenedor.sh
+│     ├─ src
+│     │  ├─ App.css
+│     │  ├─ App.test.tsx
+│     │  ├─ App.tsx
+│     │  ├─ components
+│     │  │  ├─ Comparacion
+│     │  │  │  ├─ CompareModal.css
+│     │  │  │  ├─ CompareModal.jsx
+│     │  │  │  ├─ ImageProcessor.css
+│     │  │  │  └─ ImageProcessor.jsx
+│     │  │  ├─ ImageGallery
+│     │  │  │  ├─ ImageGallery.css
+│     │  │  │  └─ ImageGallery.jsx
+│     │  │  └─ Shared
+│     │  │     ├─ Button.jsx
+│     │  │     └─ Input.jsx
+│     │  ├─ index.css
+│     │  ├─ index.tsx
+│     │  ├─ logo.svg
+│     │  ├─ pages
+│     │  │  ├─ Dashboard
+│     │  │  │  ├─ Dashboard.css
+│     │  │  │  └─ DashboardPage.jsx
+│     │  │  └─ Login
+│     │  │     ├─ Login.css
+│     │  │     └─ LoginPage.jsx
+│     │  ├─ react-app-env.d.ts
+│     │  ├─ reportWebVitals.ts
+│     │  ├─ services
+│     │  │  ├─ apiClient.js
+│     │  │  ├─ authService.js
+│     │  │  ├─ comparacionesService.js
+│     │  │  ├─ imagenService.js
+│     │  │  └─ processedImageService.js
+│     │  ├─ setupTests.ts
+│     │  └─ utils
+│     │     └─ authHelpers.js
+│     └─ tsconfig.json
+└─ start-app.sh
+
+```
+```
+MICROSERVICIOS-WEB-IMAGENES
+├─ .env
+├─ .idea
+│  ├─ MICROSERVICIOS-WEB-IMAGENES.iml
+│  ├─ modules.xml
+│  ├─ vcs.xml
+│  └─ workspace.xml
+├─ azure-deployment
+│  ├─ configs
+│  ├─ k8s-manifests
+│  │  ├─ final-microservices.yaml
+│  │  ├─ fix-frontend.yaml
+│  │  ├─ gateway-config.yaml
+│  │  ├─ k8s-deployment.yaml
+│  │  └─ update-microservices-azure-sql.yaml
+│  ├─ README-AZURE-DEPLOYMENT.md
+│  ├─ README.md
+│  └─ scripts
+│     ├─ deploy-aks-simple.sh
+│     ├─ deploy-app.sh
+│     ├─ deploy-azure-sql.sh
+│     └─ simple-deploy.sh
+├─ azure-sql-secret.yaml
+├─ cleanup-azure.sh
+├─ deploy-to-azure.sh
+├─ docker-compose.yml
+├─ docs
+├─ ImagenService
+├─ k8s
+│  ├─ base
+│  │  ├─ auth-service
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  ├─ secret.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ frontend
+│  │  │  ├─ configmap.yaml
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ gateway
+│  │  │  ├─ configmap.yaml
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ imagen-service
+│  │  │  ├─ deployment.yaml
+│  │  │  ├─ hpa.yaml
+│  │  │  ├─ ingress.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  ├─ secret.yaml
+│  │  │  └─ service.yaml
+│  │  ├─ ingress
+│  │  │  ├─ ingress.yaml
+│  │  │  └─ kustomization.yaml
+│  │  └─ sqlserver
+│  │     ├─ kustomization.yaml
+│  │     ├─ pvc-template.yaml
+│  │     ├─ secret.yaml
+│  │     ├─ service.yaml
+│  │     └─ statefulset.yaml
+│  ├─ configmaps
+│  │  ├─ app-config.yaml
+│  │  └─ service-config.yaml
+│  ├─ KUBERNETES_MANIFESTS.md
+│  ├─ manage-namespace.sh
+│  ├─ namespace.yaml
+│  ├─ overlays
+│  │  ├─ dev
+│  │  │  ├─ auth-service-nodeport.yaml
+│  │  │  ├─ frontend-nodeport.yaml
+│  │  │  ├─ gateway-nodeport.yaml
+│  │  │  ├─ imagen-service-nodeport.yaml
+│  │  │  ├─ kustomization.yaml
+│  │  │  └─ patch-resources.yaml
+│  │  └─ prod
+│  │     ├─ external-db-secret.yaml
+│  │     ├─ hpa.yaml
+│  │     ├─ kustomization.yaml
+│  │     └─ networkpolicy.yaml
+│  ├─ README.md
+│  └─ secrets
+│     ├─ api-secret.yaml
+│     ├─ database-secret.yaml
+│     └─ tls-secret.yaml
+├─ k8s-deployment-updated.yaml
+├─ k8s-deployment.yaml
+├─ README.md
+├─ reiniciarContenedores.sh
+├─ src
+│  ├─ AuthService
+│  │  ├─ .dockerignore
+│  │  ├─ appsettings.json
+│  │  ├─ AuthService.csproj
+│  │  ├─ AuthService.http
+│  │  ├─ AuthService.sln
+│  │  ├─ Controllers
+│  │  │  ├─ AuthController.cs
+│  │  │  └─ ProtectedController.cs
+│  │  ├─ Data
+│  │  │  └─ AuthDbContext.cs
+│  │  ├─ Dockerfile
+│  │  ├─ Helpers
+│  │  │  ├─ EncryptionHelper.cs
+│  │  │  ├─ EncryptionOptions.cs
+│  │  │  └─ JwtOptions.cs
+│  │  ├─ Migrations
+│  │  │  ├─ 20250616235925_InitialCreate.cs
+│  │  │  ├─ 20250616235925_InitialCreate.Designer.cs
+│  │  │  ├─ 20250617020843_InitAuthDb.cs
+│  │  │  ├─ 20250617020843_InitAuthDb.Designer.cs
+│  │  │  └─ AuthDbContextModelSnapshot.cs
+│  │  ├─ Models
+│  │  │  ├─ Credencial.cs
+│  │  │  ├─ LoginRequest.cs
+│  │  │  ├─ LoginResult.cs
+│  │  │  └─ Usuario.cs
+│  │  ├─ Program.cs
+│  │  ├─ Program.cs.bak
+│  │  ├─ Properties
+│  │  │  ├─ launchSettings.json
+│  │  │  ├─ serviceDependencies.json
+│  │  │  └─ serviceDependencies.local.json
+│  │  └─ Services
+│  │     ├─ ITokenService.cs
+│  │     ├─ IUserService.cs
+│  │     ├─ TokenService.cs
+│  │     └─ UserService.cs
+│  ├─ Gateway
+│  │  ├─ .dockerignore
+│  │  ├─ appsettings.json
+│  │  ├─ Dockerfile
+│  │  ├─ Gateway.csproj
+│  │  ├─ Gateway.http
+│  │  ├─ Gateway.sln
+│  │  ├─ Helpers
+│  │  │  └─ JwtOptions.cs
+│  │  ├─ ocelot.json
+│  │  ├─ ocelot.Production.json
+│  │  ├─ Program.cs
+│  │  ├─ Properties
+│  │  │  └─ launchSettings.json
+│  │  └─ WeatherForecast.cs
+│  ├─ ImagenService
+│  │  ├─ .dockerignore
+│  │  ├─ appsettings.json
+│  │  ├─ Controllers
+│  │  │  ├─ ComparacionesController.cs
+│  │  │  ├─ ImagenesController.cs
+│  │  │  └─ ImagenesProcesadasController.cs
+│  │  ├─ Data
+│  │  │  ├─ ImagenDbContext.cs
+│  │  │  └─ Migrations
+│  │  ├─ Dockerfile
+│  │  ├─ DTOs
+│  │  │  ├─ ComparacionResponseDto.cs
+│  │  │  ├─ CompararDto.cs
+│  │  │  ├─ ImagenDto.cs
+│  │  │  ├─ ImagenProcesadaResponseDto.cs
+│  │  │  ├─ ImagenProcesadaSimpleDto.cs
+│  │  │  ├─ ImagenSimpleDto.cs
+│  │  │  ├─ ImagenUploadDto.cs
+│  │  │  ├─ LoginRequestDto.cs
+│  │  │  ├─ LoginResponseDto.cs
+│  │  │  └─ ProcesarDto.cs
+│  │  ├─ ImagenService.csproj
+│  │  ├─ ImagenService.http
+│  │  ├─ ImagenService.sln
+│  │  ├─ Init
+│  │  │  └─ init.sql
+│  │  ├─ Migrations
+│  │  │  ├─ 20250618071845_InitialCreate.cs
+│  │  │  ├─ 20250618071845_InitialCreate.Designer.cs
+│  │  │  └─ ImagenDbContextModelSnapshot.cs
+│  │  ├─ Models
+│  │  │  ├─ Comparacion.cs
+│  │  │  └─ Imagen.cs
+│  │  ├─ Program.cs
+│  │  ├─ Properties
+│  │  │  ├─ launchSettings.json
+│  │  │  ├─ serviceDependencies.json
+│  │  │  └─ serviceDependencies.local.json
+│  │  ├─ Services
+│  │  │  ├─ IImageProcessorService.cs
+│  │  │  ├─ ImageProcessorService.cs.cs
+│  │  │  ├─ IUsuarioService.cs
+│  │  │  └─ UsuarioService.cs
+│  │  ├─ WeatherForecast.cs
+│  │  └─ Worker
+│  │     └─ ImagenWorker.cs
+│  └─ react-frontend
+│     ├─ .env
+│     ├─ Dockerfile
+│     ├─ nginx.conf
+│     ├─ package-lock.json
+│     ├─ package.json
+│     ├─ public
+│     │  ├─ favicon.ico
+│     │  ├─ index.html
+│     │  ├─ logo192.png
+│     │  ├─ logo512.png
+│     │  ├─ manifest.json
+│     │  └─ robots.txt
+│     ├─ README.md
+│     ├─ resetearContenedor.sh
+│     ├─ src
+│     │  ├─ App.css
+│     │  ├─ App.test.tsx
+│     │  ├─ App.tsx
+│     │  ├─ components
+│     │  │  ├─ Comparacion
+│     │  │  │  ├─ CompareModal.css
+│     │  │  │  ├─ CompareModal.jsx
+│     │  │  │  ├─ ImageProcessor.css
+│     │  │  │  └─ ImageProcessor.jsx
+│     │  │  ├─ ImageGallery
+│     │  │  │  ├─ ImageGallery.css
+│     │  │  │  └─ ImageGallery.jsx
+│     │  │  └─ Shared
+│     │  │     ├─ Button.jsx
+│     │  │     └─ Input.jsx
+│     │  ├─ index.css
+│     │  ├─ index.tsx
+│     │  ├─ logo.svg
+│     │  ├─ pages
+│     │  │  ├─ Dashboard
+│     │  │  │  ├─ Dashboard.css
+│     │  │  │  └─ DashboardPage.jsx
+│     │  │  └─ Login
+│     │  │     ├─ Login.css
+│     │  │     └─ LoginPage.jsx
+│     │  ├─ react-app-env.d.ts
+│     │  ├─ reportWebVitals.ts
+│     │  ├─ services
+│     │  │  ├─ apiClient.js
+│     │  │  ├─ authService.js
+│     │  │  ├─ comparacionesService.js
+│     │  │  ├─ imagenService.js
+│     │  │  └─ processedImageService.js
+│     │  ├─ setupTests.ts
+│     │  └─ utils
+│     │     └─ authHelpers.js
+│     └─ tsconfig.json
+└─ start-app.sh
+
+```
