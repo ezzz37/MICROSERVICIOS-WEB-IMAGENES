@@ -2,7 +2,7 @@
 
 set -e
 
-ACR_NAME="miregistroacr1751945372"
+ACR_NAME="miregistroacr1752465648"
 ACR_LOGIN_SERVER="$ACR_NAME.azurecr.io"
 
 kubectl create namespace microservicios-web-imagenes --dry-run=client -o yaml | kubectl apply -f -

@@ -18,7 +18,7 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # 4) Copiamos los JSON de configuración
-COPY ocelot.json      .
+COPY ocelot.Production.json ocelot.json
 COPY appsettings.json .
 
 # 5) Configuramos Kestrel

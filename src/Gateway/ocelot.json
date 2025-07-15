@@ -14,7 +14,7 @@
       "UpstreamPathTemplate": "/auth/login",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "authservice", "Port": 8080 }
+        { "Host": "authservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     },
@@ -23,7 +23,7 @@
       "UpstreamPathTemplate": "/auth/refresh",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "authservice", "Port": 8080 }
+        { "Host": "authservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     },
@@ -32,7 +32,7 @@
       "UpstreamPathTemplate": "/protected/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "authservice", "Port": 8080 }
+        { "Host": "authservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ],
       "AuthenticationOptions": {
@@ -45,7 +45,7 @@
       "UpstreamPathTemplate": "/api/Imagenes",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Post", "Options" ]
     },
@@ -54,7 +54,7 @@
       "UpstreamPathTemplate": "/api/Imagenes/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Put", "Delete", "Options" ]
     },
@@ -63,7 +63,7 @@
       "UpstreamPathTemplate": "/api/Imagenes/upload",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ],
       "HttpHandlerOptions": {
@@ -77,7 +77,7 @@
       "UpstreamPathTemplate": "/api/ImagenesProcesadas",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -86,7 +86,7 @@
       "UpstreamPathTemplate": "/api/ImagenesProcesadas/{idImagen}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -95,7 +95,7 @@
       "UpstreamPathTemplate": "/api/ImagenesProcesadas/procesar/{idImagen}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     },
@@ -106,7 +106,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -115,7 +115,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -124,7 +124,7 @@
       "UpstreamPathTemplate": "/api/Comparaciones/porImagenes",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Get", "Options" ]
     },
@@ -133,15 +133,15 @@
       "UpstreamPathTemplate": "/api/Comparaciones/comparar",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
-        { "Host": "imagenservice", "Port": 8080 }
+        { "Host": "imagenservice-service", "Port": 8080 }
       ],
       "UpstreamHttpMethod": [ "Post", "Options" ]
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:8081",
+    "BaseUrl": "http://4.149.142.85:8080",
     "Cors": {
-      "AllowedOrigins": [ "http://localhost:3000" ],
+      "AllowedOrigins": [ "http://172.179.63.132", "http://localhost:3000" ],
       "AllowedHeaders": [ "*" ],
       "AllowedMethods": [ "*" ],
       "AllowCredentials": true

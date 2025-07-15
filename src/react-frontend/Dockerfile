@@ -8,6 +8,11 @@ RUN npm ci
 
 # Genera el build de producción
 COPY . .
+# Limpiar cualquier cache residual
+RUN rm -rf node_modules/.cache build .eslintcache
+# Build sin cache
+ENV GENERATE_SOURCEMAP=false
+ENV CI=false
 RUN npm run build
 
 # Serve con Nginx

@@ -8,7 +8,7 @@ import apiClient from './apiClient';
 const login = async (username, password) => {
   const { data } = await apiClient.post(
     '/auth/login',
-    { username, password }
+    { Username: username, Password: password }
   );
   // data === { accessToken: '...' }
   return data;
@@ -18,8 +18,8 @@ const login = async (username, password) => {
  * @returns {Promise<{ accessToken: string }>}
  */
 const refreshToken = async () => {
-  const { data } = await apiClient.post('/auth/refresh');
-  return data;
+  console.log('RefreshToken disabled to avoid CORS issues');
+  return Promise.reject(new Error('Refresh token not implemented'));
 };
 
 /**
